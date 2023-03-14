@@ -6,3 +6,6 @@ export const store = configureStore({
     user: userSlice.reducer,
   },
 });
+
+//Root states
+export type RootState = ReturnType<typeof store.getState>;
