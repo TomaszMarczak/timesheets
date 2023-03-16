@@ -38,12 +38,12 @@ const HomeScreen = ({ isLoading }: ScreenTypes) => {
         <View style={styles.buttons}>
           <Pressable>
             <Link style={styles.linkPrimary} to="/CreateProject">
-              Create a new project
+              <Text>Create a new project</Text>
             </Link>
           </Pressable>
           <Pressable>
             <Link style={styles.linkSecondary} to="/JoinProject">
-              Join existing project
+              <Text>Join existing project</Text>
             </Link>
           </Pressable>
         </View>

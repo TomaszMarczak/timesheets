@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Switch, Input, Button } from "@rneui/themed";
-import { useState } from "react";
+import { Input, Button, ButtonGroup, Overlay } from "@rneui/themed";
+import { useState, useEffect } from "react";
 import { StyleSheet } from "react-native";
 import uuid from "react-native-uuid";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -10,34 +10,46 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation/settings";
 
-//Create new project. After creation, user is redirected to the HomeScreen.
-//User can create a new project by entering a project name and clicking the "Create" button.
-//User can cancel the creation of a new project by clicking the "Cancel" button.
-//User can not create a new project without entering a project name.
-//User can not create a new project with a project name that already exists.
-//User can not create a new project with a project name that is longer than 50 characters.
-//User can not create a new project with a project name that contains only numbers.
-//User can not create a new project with a project name that contains only special characters and spaces.
-
-//Project creation generates a unique project ID and all data added to existing projects list
-
-//Screen for saving/editing name of the user in local storage and in redux store
-
 const CreateProject = () => {
   const [projectName, setProjectName] = useState("");
   const projectId = uuid.v4() as string;
   const dispatch = useDispatch();
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const [selectedIndexes, setSelectedIndexes] = useState([] as number[]);
+  const [defaultWorkingHours, setDefaultWorkingHours] = useState(12 as number);
+  const [workingHours, setWorkingHours] = useState(() => {
+    return [0, 0, 0, 0, 0, 0, 0];
+  });
+  const [visible, setVisible] = useState<number | null>();
 
-  const handleSave = async () => {
-    //Save name to async storage and redux store
-    await AsyncStorage.setItem("projectName", projectName);
-    await AsyncStorage.setItem("projectId", projectId);
+  const toggleOverlay = (weekdayIndex: number) => {
+    setVisible(weekdayIndex);
   };
+
+  const handleSave = async () => {};
   const handleCancel = async () => {
     //Go back to HomeScreen
     navigation.navigate("HomeScreen", { isLoading: false });
   };
+
+  const handleChangeWorkingHours = (value: string) => {
+    //Cannot be less than 0 and more than 24
+    if (parseInt(value) < 0 || parseInt(value) > 24) return;
+    setDefaultWorkingHours(parseInt(value));
+  };
+
+  const handleChangeWeekdayWorkingHours = (value: string) => {
+    //Cannot be less than 0 and more than 24
+    if (parseInt(value) < 0 || parseInt(value) > 24) return;
+    //Update the workingHours array
+    const newWorkingHours = [...workingHours];
+    newWorkingHours[visible as number] = parseInt(value);
+    setWorkingHours(newWorkingHours);
+  };
+
+  useEffect(() => {
+    console.log(workingHours);
+  }, [workingHours]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -48,13 +60,76 @@ const CreateProject = () => {
         value={projectName}
         placeholder="Enter project name..."
       />
+      <Text style={styles.title}>Typical working hours</Text>
+      <Input
+        containerStyle={styles.inputArea}
+        value={defaultWorkingHours.toString()}
+        onChangeText={handleChangeWorkingHours}
+      />
+
       <Text style={styles.title}>Typical project working days</Text>
-      <View style={styles.weekdays}>
-        <View style={styles.weekday}>
-          <Text style={styles.text}>Monday</Text>
-          <Switch />
-        </View>
-      </View>
+      <ButtonGroup
+        buttons={[
+          `Monday ${selectedIndexes.includes(0) ? workingHours[0] : ""}`,
+          `Tuesday ${selectedIndexes.includes(1) ? workingHours[1] : ""}`,
+          `Wednesday ${selectedIndexes.includes(2) ? workingHours[2] : ""}`,
+          `Thursday`,
+          `Friday`,
+          `Saturday`,
+          `Sunday`,
+        ]}
+        textStyle={{ fontSize: 12 }}
+        buttonStyle={{ width: 200 }}
+        vertical
+        selectMultiple
+        selectedIndexes={selectedIndexes}
+        onPress={(value) => {
+          setWorkingHours((prev) => {
+            const newWorkingHours = [...prev];
+            newWorkingHours[value] = defaultWorkingHours;
+            return newWorkingHours;
+          });
+
+          setSelectedIndexes(value);
+        }}
+        onLongPress={(value) => {
+          const target = value.target
+            ? value.target // web
+            : value.nativeEvent.target; // mobile
+          console.log(target);
+          if (target.innerText?.includes("Monday")) {
+            toggleOverlay(0);
+          }
+          if (target.innerText?.includes("Tuesday")) {
+            toggleOverlay(1);
+          }
+          if (target.innerText?.includes("Wednesday")) {
+            toggleOverlay(2);
+          }
+          if (target.innerText?.includes("Thursday")) {
+            toggleOverlay(3);
+          }
+          if (target.innerText?.includes("Friday")) {
+            toggleOverlay(4);
+          }
+          if (target.innerText?.includes("Saturday")) {
+            toggleOverlay(5);
+          }
+          if (target.innerText?.includes("Sunday")) {
+            toggleOverlay(6);
+          }
+        }}
+      />
+      {visible != null && (
+        <Overlay isVisible={true} onBackdropPress={() => setVisible(null)}>
+          <Text>Edit working hours for weekday</Text>
+          <Input
+            containerStyle={styles.inputArea}
+            value={workingHours[visible as number].toString()}
+            onChangeText={handleChangeWeekdayWorkingHours}
+          />
+        </Overlay>
+      )}
       <View style={styles.buttons}>
         <Button color="lightcoral" title="Cancel" onPress={handleCancel} />
         <Button title="Create" onPress={handleSave} />
