@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Input, Button, ButtonGroup, Overlay } from "@rneui/themed";
 import { useState, useEffect } from "react";
@@ -16,11 +16,23 @@ const CreateProject = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [selectedIndexes, setSelectedIndexes] = useState([] as number[]);
-  const [defaultWorkingHours, setDefaultWorkingHours] = useState(12 as number);
+  const [defaultWorkingHours, setDefaultWorkingHours] = useState<number | "">(
+    12 as number
+  );
   const [workingHours, setWorkingHours] = useState(() => {
     return [0, 0, 0, 0, 0, 0, 0];
   });
   const [visible, setVisible] = useState<number | null>();
+
+  const weekdays = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
 
   const handleSave = async () => {};
   const handleCancel = async () => {
@@ -29,14 +41,24 @@ const CreateProject = () => {
   };
 
   const handleChangeWorkingHours = (value: string) => {
-    //Cannot be less than 0 and more than 24
+    //Enter only numbers, cannot be less than 0 and more than 24.
     if (parseInt(value) < 0 || parseInt(value) > 24) return;
-    setDefaultWorkingHours(parseInt(value));
+    if (value === "") {
+      setDefaultWorkingHours("");
+      return;
+    }
+    if (!isNaN(parseInt(value))) setDefaultWorkingHours(parseInt(value));
   };
 
   const handleChangeWeekdayWorkingHours = (value: string) => {
-    //Cannot be less than 0 and more than 24
+    //Cannot be less than 0 and more than 24, if the value is empty, set it to default working hours
     if (parseInt(value) < 0 || parseInt(value) > 24) return;
+    if (value === "") {
+      const newWorkingHours = [...workingHours];
+      newWorkingHours[visible as number] = defaultWorkingHours as number;
+      setWorkingHours(newWorkingHours);
+      return;
+    }
     const newWorkingHours = [...workingHours];
     newWorkingHours[visible as number] = parseInt(value);
     setWorkingHours(newWorkingHours);
@@ -52,7 +74,7 @@ const CreateProject = () => {
     const newWorkingHours = [...workingHours];
     value.forEach((index) => {
       if (newWorkingHours[index] === 0) {
-        newWorkingHours[index] = defaultWorkingHours;
+        newWorkingHours[index] = defaultWorkingHours as number;
       }
     });
     //Set the working hours for unselected weekdays to 0
@@ -66,8 +88,8 @@ const CreateProject = () => {
 
   //TESTING
   useEffect(() => {
-    console.log(workingHours);
-  }, [workingHours]);
+    console.log(defaultWorkingHours);
+  }, [defaultWorkingHours]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -81,20 +103,28 @@ const CreateProject = () => {
       <Text style={styles.title}>Typical working hours</Text>
       <Input
         containerStyle={styles.inputArea}
-        value={defaultWorkingHours.toString()}
-        onChangeText={handleChangeWorkingHours}
+        keyboardType="numeric"
+        selectTextOnFocus
+        value={defaultWorkingHours?.toString()}
+        onChangeText={(value) => handleChangeWorkingHours(value)}
+        onBlur={(e) => {
+          //If the value is empty, set it to 12
+          if (e.nativeEvent.text === "") {
+            setDefaultWorkingHours(12);
+          }
+        }}
       />
 
       <Text style={styles.title}>Typical project working days</Text>
       <ButtonGroup
         buttons={[
-          `Monday ${workingHours[0]}`,
-          `Tuesday ${workingHours[1]}`,
-          `Wednesday ${workingHours[2]}`,
-          `Thursday ${workingHours[3]}`,
-          `Friday ${workingHours[4]}`,
-          `Saturday ${workingHours[5]}`,
-          `Sunday ${workingHours[6]}`,
+          `Monday ${workingHours[0] === 0 ? "" : workingHours[0] + "h"}`,
+          `Tuesday ${workingHours[1] === 0 ? "" : workingHours[1] + "h"}`,
+          `Wednesday ${workingHours[2] === 0 ? "" : workingHours[2] + "h"}`,
+          `Thursday ${workingHours[3] === 0 ? "" : workingHours[3] + "h"}`,
+          `Friday ${workingHours[4] === 0 ? "" : workingHours[4] + "h"}`,
+          `Saturday ${workingHours[5] === 0 ? "" : workingHours[5] + "h"}`,
+          `Sunday ${workingHours[6] === 0 ? "" : workingHours[6] + "h"}`,
         ]}
         textStyle={{ fontSize: 12 }}
         buttonStyle={{ width: 200 }}
@@ -107,39 +137,40 @@ const CreateProject = () => {
         }}
         onLongPress={(value) => {
           const target = value.target
-            ? value.target // web
+            ? value.target.textContent // web
             : value.nativeEvent.target; // mobile
           console.log(target);
-          if (target.innerText?.includes("Monday")) {
+          if (target.includes("Monday")) {
             setVisible(0);
           }
-          if (target.innerText?.includes("Tuesday")) {
+          if (target.includes("Tuesday")) {
             setVisible(1);
           }
-          if (target.innerText?.includes("Wednesday")) {
+          if (target.includes("Wednesday")) {
             setVisible(2);
           }
-          if (target.innerText?.includes("Thursday")) {
+          if (target.includes("Thursday")) {
             setVisible(3);
           }
-          if (target.innerText?.includes("Friday")) {
+          if (target.includes("Friday")) {
             setVisible(4);
           }
-          if (target.innerText?.includes("Saturday")) {
+          if (target.includes("Saturday")) {
             setVisible(5);
           }
-          if (target.innerText?.includes("Sunday")) {
+          if (target.includes("Sunday")) {
             setVisible(6);
           }
         }}
       />
       {visible != null && (
         <Overlay isVisible={true} onBackdropPress={() => setVisible(null)}>
-          <Text>Edit working hours for weekday</Text>
+          <Text>{`Edit working hours for ${weekdays[visible as number]}`}</Text>
           <Input
             containerStyle={styles.inputArea}
             value={workingHours[visible as number].toString()}
             onChangeText={handleChangeWeekdayWorkingHours}
+            selectTextOnFocus
           />
         </Overlay>
       )}
