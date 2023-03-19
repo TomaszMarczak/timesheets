@@ -51,22 +51,30 @@ const CreateProject = () => {
   };
 
   const handleChangeWeekdayWorkingHours = (value: string) => {
-    //Cannot be less than 0 and more than 24, if the value is empty, set it to default working hours
-    if (parseInt(value) < 0 || parseInt(value) > 24) return;
+    //Enter only numbers, cannot be less than 0 and more than 24.
+    if (parseInt(value) < 1 || parseInt(value) > 24) return;
     if (value === "") {
       const newWorkingHours = [...workingHours];
-      newWorkingHours[visible as number] = defaultWorkingHours as number;
+      newWorkingHours[visible as number] = 0;
       setWorkingHours(newWorkingHours);
+      //Remove the index from selectedIndexes
+      const newSelectedIndexes = [...selectedIndexes].filter(
+        (index) => index !== visible
+      );
+      setSelectedIndexes(newSelectedIndexes);
       return;
     }
-    const newWorkingHours = [...workingHours];
-    newWorkingHours[visible as number] = parseInt(value);
-    setWorkingHours(newWorkingHours);
-    const newSelectedIndexes = [...selectedIndexes];
-    if (!newSelectedIndexes.includes(visible as number)) {
-      newSelectedIndexes.push(visible as number);
+    if (!isNaN(parseInt(value))) {
+      const newWorkingHours = [...workingHours];
+
+      newWorkingHours[visible as number] = parseInt(value);
+      setWorkingHours(newWorkingHours);
+      const newSelectedIndexes = [...selectedIndexes];
+      if (!newSelectedIndexes.includes(visible as number)) {
+        newSelectedIndexes.push(visible as number);
+      }
+      setSelectedIndexes(newSelectedIndexes);
     }
-    setSelectedIndexes(newSelectedIndexes);
   };
 
   const handleWeekdaySelection = (value: number[]) => {
@@ -171,6 +179,14 @@ const CreateProject = () => {
             value={workingHours[visible as number].toString()}
             onChangeText={handleChangeWeekdayWorkingHours}
             selectTextOnFocus
+            onBlur={(e) => {
+              //If the value is empty, set it to 0
+              if (e.nativeEvent.text === "") {
+                const newWorkingHours = [...workingHours];
+                newWorkingHours[visible as number] = 0;
+                setWorkingHours(newWorkingHours);
+              }
+            }}
           />
         </Overlay>
       )}
