@@ -5,14 +5,18 @@ import { useState, useEffect } from "react";
 import { StyleSheet } from "react-native";
 import uuid from "react-native-uuid";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation/settings";
+import { RootState } from "../redux/store";
+import { setProjects } from "../redux/projectsSlice";
+import { Project } from "../types";
 
 const CreateProject = () => {
   const [projectName, setProjectName] = useState("");
   const projectId = uuid.v4() as string;
+  const projectOwner = useSelector((state: RootState) => state.user.userId);
   const dispatch = useDispatch();
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [selectedIndexes, setSelectedIndexes] = useState([] as number[]);
@@ -34,7 +38,28 @@ const CreateProject = () => {
     "Sunday",
   ];
 
-  const handleSave = async () => {};
+  const handleSave = async () => {
+    const project: Project = {
+      id: projectId,
+      name: projectName,
+      owner: projectOwner,
+      workingHours: workingHours,
+      contractors: [],
+    };
+    //Save to redux and local storage projects array
+    const projects = await AsyncStorage.getItem("projects");
+    if (projects) {
+      const newProjects = JSON.parse(projects);
+      newProjects.push(project);
+      await AsyncStorage.setItem("projects", JSON.stringify(newProjects));
+      dispatch(setProjects(newProjects));
+    } else {
+      await AsyncStorage.setItem("projects", JSON.stringify([project]));
+      dispatch(setProjects([project]));
+    }
+    //Go back to HomeScreen
+    navigation.navigate("HomeScreen", { isLoading: false });
+  };
   const handleCancel = async () => {
     //Go back to HomeScreen
     navigation.navigate("HomeScreen", { isLoading: false });
