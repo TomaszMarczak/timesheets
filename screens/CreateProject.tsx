@@ -77,8 +77,9 @@ const CreateProject = () => {
 
   const handleChangeWeekdayWorkingHours = (value: string) => {
     //Enter only numbers, cannot be less than 0 and more than 24.
-    if (parseInt(value) < 1 || parseInt(value) > 24) return;
-    if (value === "") {
+    if (parseInt(value) < 0 || parseInt(value) > 24) return;
+    if (value.startsWith("0") && /\D/.test(value)) return;
+    if (value === "" || value === "0" || value === "00") {
       const newWorkingHours = [...workingHours];
       newWorkingHours[visible as number] = 0;
       setWorkingHours(newWorkingHours);
@@ -89,9 +90,9 @@ const CreateProject = () => {
       setSelectedIndexes(newSelectedIndexes);
       return;
     }
+    //If the value is not empty, set it to the working hours array.
     if (!isNaN(parseInt(value))) {
       const newWorkingHours = [...workingHours];
-
       newWorkingHours[visible as number] = parseInt(value);
       setWorkingHours(newWorkingHours);
       const newSelectedIndexes = [...selectedIndexes];
@@ -118,11 +119,6 @@ const CreateProject = () => {
     });
     setWorkingHours(newWorkingHours);
   };
-
-  //TESTING
-  useEffect(() => {
-    console.log(defaultWorkingHours);
-  }, [defaultWorkingHours]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -172,7 +168,6 @@ const CreateProject = () => {
           const target = value.target
             ? value.target.textContent // web
             : value.nativeEvent.target; // mobile
-          console.log(target);
           if (target.includes("Monday")) {
             setVisible(0);
           }
@@ -206,10 +201,15 @@ const CreateProject = () => {
             selectTextOnFocus
             onBlur={(e) => {
               //If the value is empty, set it to 0
-              if (e.nativeEvent.text === "") {
+              if (e.nativeEvent.text === "" || e.nativeEvent.text === "0") {
                 const newWorkingHours = [...workingHours];
                 newWorkingHours[visible as number] = 0;
                 setWorkingHours(newWorkingHours);
+                //Remove the index from selectedIndexes
+                const newSelectedIndexes = [...selectedIndexes].filter(
+                  (index) => index !== visible
+                );
+                setSelectedIndexes(newSelectedIndexes);
               }
             }}
           />
