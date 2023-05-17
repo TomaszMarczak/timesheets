@@ -1,25 +1,20 @@
-import { View, Text, TextInput } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View, Text, StyleSheet } from "react-native";
+import { SafeAreaView } from "../components/View";
 import { Input, Button, ButtonGroup, Overlay } from "@rneui/themed";
-import { useState, useEffect } from "react";
-import { StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
 import uuid from "react-native-uuid";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation/settings";
-import { RootState } from "../redux/store";
-import { setProjects } from "../redux/projectsSlice";
-import { Project } from "../types";
+import { Project } from "../models/types";
+import { TouchableOpacity } from "react-native";
+import { getUserId } from "../helpers/UserHandling";
 
 const CreateProject = () => {
   const [projectName, setProjectName] = useState("");
-  const projectId = uuid.v4() as string;
-  const projectOwner = useSelector((state: RootState) => state.user.userId);
-  const dispatch = useDispatch();
+  const [projectId, setProjectId] = useState(uuid.v4() as string);
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const [selectedIndexes, setSelectedIndexes] = useState([] as number[]);
   const [defaultWorkingHours, setDefaultWorkingHours] = useState<number | "">(
     12 as number
   );
@@ -42,20 +37,18 @@ const CreateProject = () => {
     const project: Project = {
       id: projectId,
       name: projectName,
-      owner: projectOwner,
+      owner: await getUserId(),
       workingHours: workingHours,
       contractors: [],
     };
-    //Save to redux and local storage projects array
+    //Save to local storage projects array
     const projects = await AsyncStorage.getItem("projects");
     if (projects) {
       const newProjects = JSON.parse(projects);
       newProjects.push(project);
       await AsyncStorage.setItem("projects", JSON.stringify(newProjects));
-      dispatch(setProjects(newProjects));
     } else {
       await AsyncStorage.setItem("projects", JSON.stringify([project]));
-      dispatch(setProjects([project]));
     }
     //Go back to HomeScreen
     navigation.navigate("HomeScreen", { isLoading: false });
@@ -64,6 +57,23 @@ const CreateProject = () => {
     //Go back to HomeScreen
     navigation.navigate("HomeScreen", { isLoading: false });
   };
+
+  const addDefaultWorkingHours = (index: number) => {
+    const newWorkingHours = [...workingHours];
+    newWorkingHours[index] = defaultWorkingHours as number;
+    setWorkingHours(newWorkingHours);
+  };
+
+  const clearWorkingHours = (index: number) => {
+    const newWorkingHours = [...workingHours];
+    newWorkingHours[index] = 0;
+    setWorkingHours(newWorkingHours);
+  };
+
+  const handlePress = (index: number) =>
+    workingHours[index] === 0
+      ? addDefaultWorkingHours(index)
+      : clearWorkingHours(index);
 
   const handleChangeWorkingHours = (value: string) => {
     //Enter only numbers, cannot be less than 0 and more than 24.
@@ -83,11 +93,6 @@ const CreateProject = () => {
       const newWorkingHours = [...workingHours];
       newWorkingHours[visible as number] = 0;
       setWorkingHours(newWorkingHours);
-      //Remove the index from selectedIndexes
-      const newSelectedIndexes = [...selectedIndexes].filter(
-        (index) => index !== visible
-      );
-      setSelectedIndexes(newSelectedIndexes);
       return;
     }
     //If the value is not empty, set it to the working hours array.
@@ -95,33 +100,84 @@ const CreateProject = () => {
       const newWorkingHours = [...workingHours];
       newWorkingHours[visible as number] = parseInt(value);
       setWorkingHours(newWorkingHours);
-      const newSelectedIndexes = [...selectedIndexes];
-      if (!newSelectedIndexes.includes(visible as number)) {
-        newSelectedIndexes.push(visible as number);
-      }
-      setSelectedIndexes(newSelectedIndexes);
     }
   };
 
-  const handleWeekdaySelection = (value: number[]) => {
-    //Check if working hours for selected weekdays are set, if not - set them to default, if yes - leave them as they are
-    const newWorkingHours = [...workingHours];
-    value.forEach((index) => {
-      if (newWorkingHours[index] === 0) {
-        newWorkingHours[index] = defaultWorkingHours as number;
-      }
-    });
-    //Set the working hours for unselected weekdays to 0
-    newWorkingHours.forEach((hours, index) => {
-      if (!value.includes(index)) {
-        newWorkingHours[index] = 0;
-      }
-    });
-    setWorkingHours(newWorkingHours);
-  };
+  //Testing
+  useEffect(() => {
+    const generateProject = async () => {
+      const project: Project = {
+        id: projectId,
+        name: projectName,
+        owner: await getUserId(),
+        workingHours: workingHours,
+        contractors: [],
+      };
+      console.log(project);
+    };
+  });
+
+  const buttons = weekdays.map((weekday, index) => {
+    return {
+      element: () => (
+        <TouchableOpacity
+          onLongPress={() => setVisible(index)}
+          style={{
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: workingHours[index] === 0 ? "white" : "lightblue",
+          }}
+          onPress={() => handlePress(index)}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <Text
+              style={{
+                textAlign: "center",
+                flex: 1,
+                color: workingHours[index] === 0 ? "black" : "darkblue",
+              }}
+            >
+              {weekday}
+            </Text>
+            {workingHours[index] !== 0 && (
+              <View
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  width: "20%",
+                  height: "100%",
+                  backgroundColor: "white",
+                  justifyContent: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    textAlign: "center",
+                    color: "darkblue",
+                  }}
+                >
+                  {workingHours[index]}h
+                </Text>
+              </View>
+            )}
+          </View>
+        </TouchableOpacity>
+      ),
+    };
+  });
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView>
       <Input
         containerStyle={styles.inputArea}
         inputStyle={{ padding: 10 }}
@@ -146,50 +202,11 @@ const CreateProject = () => {
 
       <Text style={styles.title}>Typical project working days</Text>
       <ButtonGroup
-        buttons={[
-          `Monday ${workingHours[0] === 0 ? "" : workingHours[0] + "h"}`,
-          `Tuesday ${workingHours[1] === 0 ? "" : workingHours[1] + "h"}`,
-          `Wednesday ${workingHours[2] === 0 ? "" : workingHours[2] + "h"}`,
-          `Thursday ${workingHours[3] === 0 ? "" : workingHours[3] + "h"}`,
-          `Friday ${workingHours[4] === 0 ? "" : workingHours[4] + "h"}`,
-          `Saturday ${workingHours[5] === 0 ? "" : workingHours[5] + "h"}`,
-          `Sunday ${workingHours[6] === 0 ? "" : workingHours[6] + "h"}`,
-        ]}
+        buttons={buttons}
         textStyle={{ fontSize: 12 }}
         buttonStyle={{ width: 200 }}
         vertical
         selectMultiple
-        selectedIndexes={selectedIndexes}
-        onPress={(value) => {
-          handleWeekdaySelection(value);
-          setSelectedIndexes(value);
-        }}
-        onLongPress={(value) => {
-          const target = value.target
-            ? value.target.textContent // web
-            : value.nativeEvent.target; // mobile
-          if (target.includes("Monday")) {
-            setVisible(0);
-          }
-          if (target.includes("Tuesday")) {
-            setVisible(1);
-          }
-          if (target.includes("Wednesday")) {
-            setVisible(2);
-          }
-          if (target.includes("Thursday")) {
-            setVisible(3);
-          }
-          if (target.includes("Friday")) {
-            setVisible(4);
-          }
-          if (target.includes("Saturday")) {
-            setVisible(5);
-          }
-          if (target.includes("Sunday")) {
-            setVisible(6);
-          }
-        }}
       />
       {visible != null && (
         <Overlay isVisible={true} onBackdropPress={() => setVisible(null)}>
@@ -199,19 +216,6 @@ const CreateProject = () => {
             value={workingHours[visible as number].toString()}
             onChangeText={handleChangeWeekdayWorkingHours}
             selectTextOnFocus
-            onBlur={(e) => {
-              //If the value is empty, set it to 0
-              if (e.nativeEvent.text === "" || e.nativeEvent.text === "0") {
-                const newWorkingHours = [...workingHours];
-                newWorkingHours[visible as number] = 0;
-                setWorkingHours(newWorkingHours);
-                //Remove the index from selectedIndexes
-                const newSelectedIndexes = [...selectedIndexes].filter(
-                  (index) => index !== visible
-                );
-                setSelectedIndexes(newSelectedIndexes);
-              }
-            }}
           />
         </Overlay>
       )}
