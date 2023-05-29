@@ -23,10 +23,9 @@ const HomeScreen = () => {
       <View>
         <Card>
           <Title>Projects</Title>
-          <Card>
-            <Title>Project 1</Title>
-            <Text>Project 1 description</Text>
-          </Card>
+          <Link to={`/CreateProject`}>
+            <Button>Create new</Button>
+          </Link>
         </Card>
       </View>
     </SafeAreaView>
