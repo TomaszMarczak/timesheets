@@ -1,54 +1,70 @@
 import React, { useState, useRef } from "react";
-import { Text, StyleSheet } from "react-native";
+import { Card } from "../components/Card";
+import { Text, Title } from "../components/Text";
+import { Button } from "../components/Button";
 import { SafeAreaView } from "../components/View";
-import { Button, Input } from "@rneui/themed";
+import { Pressable } from "react-native";
+import { Input } from "../components/Input";
 import { useNavigation } from "@react-navigation/native";
 import { useUserContext } from "../context/UserContext";
 
 const ChangeName = () => {
   const { userName, setNewUserName } = useUserContext();
+  const [error, setError] = useState<string>("");
   const newNameRef = useRef(userName);
   const navigation = useNavigation();
 
+  const trimName = (name: string) => {
+    return name.trim().replace(/\s{2,}/g, " ");
+  };
+
+  const validateName = (name: string) => {
+    if (name.match(/^(?!.*\s{2})[A-Za-z\s]+$/)) {
+      return true;
+    } else if (name === "") {
+      setError("Name cannot be empty.");
+      return false;
+    } else if (name.length < 3) {
+      setError("Name must be at least 3 characters long.");
+      return false;
+    } else if (name.length > 20) {
+      setError("Name must be less than 20 characters long.");
+      return false;
+    } else {
+      setError("Name must contain only letters and spaces.");
+      return false;
+    }
+  };
+
   const handleSubmit = () => {
-    setNewUserName(newNameRef.current);
-    navigation.goBack();
+    if (validateName(newNameRef.current)) {
+      setNewUserName(trimName(newNameRef.current));
+      navigation.goBack();
+    }
   };
 
   return (
     <SafeAreaView>
-      <Text style={styles.text}>Enter your name</Text>
-      <Input
-        inputStyle={{ padding: 10 }}
-        containerStyle={styles.inputArea}
-        placeholder="Enter your name..."
-        defaultValue={userName}
-        onChange={(e) => {
-          newNameRef.current = e.nativeEvent.text;
-        }}
-        onKeyPress={(e) => {
-          e.nativeEvent.key === "Enter" && handleSubmit();
-        }}
-      />
-      <Button type="outline" title="Save" onPress={handleSubmit} />
+      <Card>
+        <Title>Enter your name:</Title>
+        <Input
+          placeholder="Enter your name..."
+          defaultValue={userName}
+          onChange={(e) => {
+            newNameRef.current = e.nativeEvent.text;
+          }}
+          selectTextOnFocus
+          onKeyPress={(e) => {
+            e.nativeEvent.key === "Enter" && handleSubmit();
+          }}
+          errorMessage={error}
+        />
+        <Pressable onPress={handleSubmit}>
+          <Button>Save</Button>
+        </Pressable>
+      </Card>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  text: {
-    fontSize: 20,
-    marginBottom: 20,
-  },
-  inputArea: {
-    width: 200,
-    alignItems: "center",
-  },
-});
 
 export default ChangeName;

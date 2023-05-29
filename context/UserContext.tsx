@@ -4,10 +4,18 @@ import {
   loadUserName,
   saveUserName,
 } from "../helpers/UserHandling";
+import { z } from "zod";
+
+const zUserName = z
+  .string()
+  .min(1)
+  .max(20)
+  .regex(/^(?!.*\s{2})[A-Za-z\s]+$/);
+const zUserId = z.string().uuid();
 
 interface UserContextTypes {
-  userName: string;
-  userId: string;
+  userName: z.infer<typeof zUserName>;
+  userId: z.infer<typeof zUserId>;
   setNewUserName: (name: string) => void;
 }
 
