@@ -1,6 +1,6 @@
 import React from "react";
-import { StyleSheet, Pressable } from "react-native";
-import { View, SafeAreaView } from "../components/View";
+
+import { SafeAreaView } from "../components/View";
 import { Card } from "../components/Card";
 import { Text, Title } from "../components/Text";
 import { Link } from "@react-navigation/native";
@@ -16,18 +16,20 @@ const HomeScreen = () => {
         <Title>User</Title>
         <Text>Username: {userName}</Text>
         <Text>UserId: {userId}</Text>
-        <Link to={`/ChangeName`}>
-          <Button>Change name</Button>
+        <Link style={{ backgroundColor: "red" }} to={`/ChangeName`}>
+          <Button>
+            <Text>Change name</Text>
+          </Button>
         </Link>
       </Card>
-      <View>
-        <Card>
-          <Title>Projects</Title>
-          <Link to={`/CreateProject`}>
-            <Button>Create new</Button>
-          </Link>
-        </Card>
-      </View>
+      <Card>
+        <Title>Projects</Title>
+        <Link to={`/CreateProject`}>
+          <Button>
+            <Text>Create new</Text>
+          </Button>
+        </Link>
+      </Card>
     </SafeAreaView>
   );
 };

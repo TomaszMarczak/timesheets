@@ -1,7 +1,8 @@
 import styled from "styled-components/native";
 import theme from "../styles/theme";
+import { View } from "react-native";
 
-export const Card = styled.View`
+export const Card = styled(View)`
   background: ${theme.colors.card};
   opacity: 0.8;
   border: 2px solid ${theme.colors.border};

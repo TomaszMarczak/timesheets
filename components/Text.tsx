@@ -1,4 +1,5 @@
 import styled from "styled-components/native";
+import { Text as RNText } from "react-native";
 import theme from "../styles/theme";
 
 export const Text = styled.Text`
@@ -8,6 +9,6 @@ export const Text = styled.Text`
 `;
 
 export const Title = styled(Text)`
-  font-size: 32px;
+  font-size: 36px;
   font-weight: 600;
 `;

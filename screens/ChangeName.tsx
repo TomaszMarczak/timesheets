@@ -59,9 +59,9 @@ const ChangeName = () => {
           }}
           errorMessage={error}
         />
-        <Pressable onPress={handleSubmit}>
-          <Button>Save</Button>
-        </Pressable>
+        <Button onPress={handleSubmit}>
+          <Text>Save</Text>
+        </Button>
       </Card>
     </SafeAreaView>
   );

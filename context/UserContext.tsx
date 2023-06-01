@@ -39,7 +39,6 @@ const UserProvider = ({ children }: UserProviderProps) => {
     loadUserName().then((name) => {
       setUserName(name);
     });
-    console.log("UserContext useEffect");
   }, []);
 
   const setNewUserName = (name: string) => {

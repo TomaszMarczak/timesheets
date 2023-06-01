@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text } from "react-native";
 import { SafeAreaView } from "../components/View";
 import { Input, Button, ButtonGroup, Overlay } from "@rneui/themed";
 import { useEffect, useState } from "react";
@@ -6,15 +6,16 @@ import uuid from "react-native-uuid";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../navigation/settings";
-import { Project } from "../models/types";
+import { Project } from "../models/Project";
 import { TouchableOpacity } from "react-native";
-import { getUserId } from "../helpers/UserHandling";
+import { useUserContext } from "../context/UserContext";
+import { WeekdaySelectableButton } from "../components/SelectableButton";
 
 const CreateProject = () => {
+  const { userId } = useUserContext();
   const [projectName, setProjectName] = useState("");
   const [projectId, setProjectId] = useState(uuid.v4() as string);
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<StackNavigationProp<any>>();
   const [defaultWorkingHours, setDefaultWorkingHours] = useState<number | "">(
     12 as number
   );
@@ -37,7 +38,7 @@ const CreateProject = () => {
     const project: Project = {
       id: projectId,
       name: projectName,
-      owner: await getUserId(),
+      owner: userId,
       workingHours: workingHours,
       contractors: [],
     };
@@ -105,11 +106,11 @@ const CreateProject = () => {
 
   //Testing
   useEffect(() => {
-    const generateProject = async () => {
+    const generateProject = () => {
       const project: Project = {
         id: projectId,
         name: projectName,
-        owner: await getUserId(),
+        owner: userId,
         workingHours: workingHours,
         contractors: [],
       };
@@ -178,16 +179,16 @@ const CreateProject = () => {
 
   return (
     <SafeAreaView>
+      <WeekdaySelectableButton>
+        <Text>Monday</Text>
+      </WeekdaySelectableButton>
       <Input
-        containerStyle={styles.inputArea}
-        inputStyle={{ padding: 10 }}
         onChangeText={setProjectName}
         value={projectName}
         placeholder="Enter project name..."
       />
-      <Text style={styles.title}>Typical working hours</Text>
+      <Text>Typical working hours</Text>
       <Input
-        containerStyle={styles.inputArea}
         keyboardType="numeric"
         selectTextOnFocus
         value={defaultWorkingHours?.toString()}
@@ -200,65 +201,24 @@ const CreateProject = () => {
         }}
       />
 
-      <Text style={styles.title}>Typical project working days</Text>
-      <ButtonGroup
-        buttons={buttons}
-        textStyle={{ fontSize: 12 }}
-        buttonStyle={{ width: 200 }}
-        vertical
-        selectMultiple
-      />
+      <Text>Typical project working days</Text>
+      <ButtonGroup buttons={buttons} vertical selectMultiple />
       {visible != null && (
         <Overlay isVisible={true} onBackdropPress={() => setVisible(null)}>
           <Text>{`Edit working hours for ${weekdays[visible as number]}`}</Text>
           <Input
-            containerStyle={styles.inputArea}
             value={workingHours[visible as number].toString()}
             onChangeText={handleChangeWeekdayWorkingHours}
             selectTextOnFocus
           />
         </Overlay>
       )}
-      <View style={styles.buttons}>
+      <View>
         <Button color="lightcoral" title="Cancel" onPress={handleCancel} />
         <Button title="Create" onPress={handleSave} />
       </View>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  text: {
-    fontSize: 20,
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 25,
-    marginBottom: 20,
-  },
-  weekdays: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: 200,
-  },
-  weekday: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  inputArea: {
-    width: 200,
-    alignItems: "center",
-  },
-  buttons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: 200,
-  },
-});
 
 export default CreateProject;

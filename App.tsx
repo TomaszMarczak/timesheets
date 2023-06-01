@@ -17,17 +17,17 @@ export default function App() {
             <Stack.Screen
               name="HomeScreen"
               component={HomeScreen}
-              options={{ headerShown: false }}
+              options={{ headerShown: false, title: "Home" }}
             />
             <Stack.Screen
               name="ChangeName"
               component={ChangeName}
-              options={{ headerShown: true, title: "Change name" }}
+              options={{ headerShown: false, title: "Change name" }}
             />
             <Stack.Screen
               name="CreateProject"
               component={CreateProject}
-              options={{ headerShown: true }}
+              options={{ headerShown: false }}
             />
           </Stack.Navigator>
         </NavigationContainer>
