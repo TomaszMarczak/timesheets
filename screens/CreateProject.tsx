@@ -1,6 +1,10 @@
-import { View, Text } from "react-native";
-import { SafeAreaView } from "../components/View";
-import { Input, Button, ButtonGroup, Overlay } from "@rneui/themed";
+import { Row, SafeAreaView, ScrollView } from "../components/View";
+import { ButtonGroup, Overlay } from "@rneui/themed";
+import { Title } from "../components/Text";
+import { Text } from "@rneui/themed";
+import { Button } from "../components/Button";
+import { View } from "../components/View";
+import { Input } from "../components/Input";
 import { useEffect, useState } from "react";
 import uuid from "react-native-uuid";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -10,6 +14,7 @@ import { Project } from "../models/Project";
 import { TouchableOpacity } from "react-native";
 import { useUserContext } from "../context/UserContext";
 import { WeekdaySelectableButton } from "../components/SelectableButton";
+import { Card } from "../components/Card";
 
 const CreateProject = () => {
   const { userId } = useUserContext();
@@ -103,21 +108,6 @@ const CreateProject = () => {
       setWorkingHours(newWorkingHours);
     }
   };
-
-  //Testing
-  useEffect(() => {
-    const generateProject = () => {
-      const project: Project = {
-        id: projectId,
-        name: projectName,
-        owner: userId,
-        workingHours: workingHours,
-        contractors: [],
-      };
-      console.log(project);
-    };
-  });
-
   const buttons = weekdays.map((weekday, index) => {
     return {
       element: () => (
@@ -178,46 +168,58 @@ const CreateProject = () => {
   });
 
   return (
-    <SafeAreaView>
-      <WeekdaySelectableButton>
-        <Text>Monday</Text>
-      </WeekdaySelectableButton>
-      <Input
-        onChangeText={setProjectName}
-        value={projectName}
-        placeholder="Enter project name..."
-      />
-      <Text>Typical working hours</Text>
-      <Input
-        keyboardType="numeric"
-        selectTextOnFocus
-        value={defaultWorkingHours?.toString()}
-        onChangeText={(value) => handleChangeWorkingHours(value)}
-        onBlur={(e) => {
-          //If the value is empty, set it to 12
-          if (e.nativeEvent.text === "") {
-            setDefaultWorkingHours(12);
-          }
-        }}
-      />
-
-      <Text>Typical project working days</Text>
-      <ButtonGroup buttons={buttons} vertical selectMultiple />
-      {visible != null && (
-        <Overlay isVisible={true} onBackdropPress={() => setVisible(null)}>
-          <Text>{`Edit working hours for ${weekdays[visible as number]}`}</Text>
+    <ScrollView>
+      <SafeAreaView>
+        <Title>Create new project</Title>
+        <Card>
+          <Text>Project name</Text>
           <Input
-            value={workingHours[visible as number].toString()}
-            onChangeText={handleChangeWeekdayWorkingHours}
-            selectTextOnFocus
+            onChangeText={setProjectName}
+            value={projectName}
+            placeholder="Enter project name..."
           />
-        </Overlay>
-      )}
-      <View>
-        <Button color="lightcoral" title="Cancel" onPress={handleCancel} />
-        <Button title="Create" onPress={handleSave} />
-      </View>
-    </SafeAreaView>
+        </Card>
+        <Card>
+          <Text>Typical working hours</Text>
+          <Input
+            keyboardType="numeric"
+            selectTextOnFocus
+            value={defaultWorkingHours?.toString()}
+            onChangeText={(value) => handleChangeWorkingHours(value)}
+            onBlur={(e) => {
+              //If the value is empty, set it to 12
+              if (e.nativeEvent.text === "") {
+                setDefaultWorkingHours(12);
+              }
+            }}
+          />
+        </Card>
+        <Card>
+          <Text>Typical project working days</Text>
+          <ButtonGroup buttons={buttons} vertical selectMultiple />
+          {visible != null && (
+            <Overlay isVisible={true} onBackdropPress={() => setVisible(null)}>
+              <Text>{`Edit working hours for ${
+                weekdays[visible as number]
+              }`}</Text>
+              <Input
+                value={workingHours[visible as number].toString()}
+                onChangeText={handleChangeWeekdayWorkingHours}
+                selectTextOnFocus
+              />
+            </Overlay>
+          )}
+        </Card>
+        <Row>
+          <Button secondary onPress={handleCancel}>
+            <Text>Cancel</Text>
+          </Button>
+          <Button primary onPress={handleSave}>
+            <Text>Save</Text>
+          </Button>
+        </Row>
+      </SafeAreaView>
+    </ScrollView>
   );
 };
 

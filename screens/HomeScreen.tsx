@@ -2,10 +2,11 @@ import React from "react";
 
 import { SafeAreaView } from "../components/View";
 import { Card } from "../components/Card";
-import { Text, Title } from "../components/Text";
+import { Title } from "../components/Text";
+import { Text } from "@rneui/themed";
 import { Link } from "@react-navigation/native";
 import { useUserContext } from "../context/UserContext";
-import { Button } from "../components/Button";
+import { LinkButton } from "../components/Button";
 
 const HomeScreen = () => {
   const { userName, userId } = useUserContext();
@@ -16,19 +17,15 @@ const HomeScreen = () => {
         <Title>User</Title>
         <Text>Username: {userName}</Text>
         <Text>UserId: {userId}</Text>
-        <Link style={{ backgroundColor: "red" }} to={`/ChangeName`}>
-          <Button>
-            <Text>Change name</Text>
-          </Button>
-        </Link>
+        <LinkButton to="ChangeName">
+          <Text>Change name</Text>
+        </LinkButton>
       </Card>
       <Card>
         <Title>Projects</Title>
-        <Link to={`/CreateProject`}>
-          <Button>
-            <Text>Create new</Text>
-          </Button>
-        </Link>
+        <LinkButton to="CreateProject">
+          <Text>Create new</Text>
+        </LinkButton>
       </Card>
     </SafeAreaView>
   );

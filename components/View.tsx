@@ -1,12 +1,23 @@
 import styled from "styled-components/native";
 import { SafeAreaView as RNSAV } from "react-native-safe-area-context";
-import { View as styledView } from "react-native";
-import theme from "../styles/theme";
+import { ScrollView as RNScrollView } from "react-native";
+import { View, ViewProps } from "react-native";
+import { StyleSheet } from "react-native";
 
-export const SafeAreaView = styled(RNSAV)`
-  margin: 0 auto;
-  color: ${theme.colors.text};
-  background: ${theme.colors.background};
-`;
+export const SafeAreaView = (props: ViewProps) => {
+  return <RNSAV {...props}>{props.children}</RNSAV>;
+};
+export const Container = (props: ViewProps) => {
+  return <View>{props.children}</View>;
+};
 
-export const View = styled(styledView)``;
+export const Row = (props: ViewProps) => {
+  return <Container>{props.children}</Container>;
+};
+
+const styles = StyleSheet.create({
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+});

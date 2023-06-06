@@ -1,7 +1,8 @@
 import styled from "styled-components/native";
 import { Pressable } from "react-native";
-import theme from "../styles/theme";
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
+import { StyleSheet } from "react-native";
 
 interface ButtonProps extends React.ComponentProps<typeof Pressable> {
   primary?: boolean;
@@ -9,19 +10,39 @@ interface ButtonProps extends React.ComponentProps<typeof Pressable> {
   active?: boolean;
 }
 
-export const Button = styled(Pressable)<ButtonProps>`
-  color: ${theme.colors.text};
-  padding: 12px;
-  margin: 10px;
-  font-weight: 600;
-  font-size: 16px;
-  margin: 10px 0 5px 0;
-  border-radius: 5px;
-  border: 2px solid ${theme.colors.border};
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  &:hover {
-    transition: all 0.2s ease-in-out;
-    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
-  }
-`;
+interface LinkButtonProps extends ButtonProps {
+  to: string;
+}
+
+export const Button = (props: ButtonProps) => {
+  return (
+    <Pressable style={styles.button} {...props}>
+      {props.children}
+    </Pressable>
+  );
+};
+
+export const LinkButton = ({ to, ...props }: LinkButtonProps) => {
+  const navigation = useNavigation<any>();
+
+  const handlePress = () => {
+    navigation.navigate(to);
+  };
+
+  return <Button onPress={handlePress} {...props} />;
+};
+
+const styles = StyleSheet.create({
+  button: {
+    color: "primary",
+    padding: 12,
+    margin: 10,
+    minWidth: 100,
+    fontWeight: "600",
+    fontSize: 16,
+    borderRadius: 5,
+    textAlign: "center",
+    alignItems: "center",
+    cursor: "pointer",
+  },
+});
