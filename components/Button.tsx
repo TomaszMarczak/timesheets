@@ -1,6 +1,7 @@
 import styled from "styled-components/native";
 import { Pressable } from "react-native";
 import theme from "../styles/theme";
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 
 interface ButtonProps extends React.ComponentProps<typeof Pressable> {
@@ -9,19 +10,49 @@ interface ButtonProps extends React.ComponentProps<typeof Pressable> {
   active?: boolean;
 }
 
+interface LinkButtonProps extends ButtonProps {
+  to: string;
+}
+
 export const Button = styled(Pressable)<ButtonProps>`
   color: ${theme.colors.text};
   padding: 12px;
   margin: 10px;
+  min-width: 100px;
   font-weight: 600;
   font-size: 16px;
-  margin: 10px 0 5px 0;
   border-radius: 5px;
   border: 2px solid ${theme.colors.border};
+  text-align: center;
+  align-items: center;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  &:hover {
-    transition: all 0.2s ease-in-out;
-    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
-  }
+
+  ${(props) =>
+    props.primary &&
+    `
+    background: ${theme.colors.primary};
+    color: ${theme.colors.textPrimary}
+  `}
+  ${(props) =>
+    props.secondary &&
+    `
+    background: ${theme.colors.secondary};
+    color: ${theme.colors.textSecondary}
+  `}
+${(props) =>
+    props.active &&
+    `
+    background: ${theme.colors.primary};
+    color: ${theme.colors.textPrimary}
+  `}
 `;
+
+export const LinkButton = ({ to, ...props }: LinkButtonProps) => {
+  const navigation = useNavigation<any>();
+
+  const handlePress = () => {
+    navigation.navigate(to);
+  };
+
+  return <Button onPress={handlePress} {...props} />;
+};

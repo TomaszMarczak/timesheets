@@ -4,6 +4,7 @@ import ChangeName from "./screens/ChangeName";
 import HomeScreen from "./screens/HomeScreen";
 import CreateProject from "./screens/CreateProject";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaView } from "./components/View";
 import { UserProvider } from "./context/UserContext";
 
 const Stack = createNativeStackNavigator();
@@ -15,6 +16,11 @@ export default function App() {
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen
+              name="CreateProject"
+              component={CreateProject}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
               name="HomeScreen"
               component={HomeScreen}
               options={{ headerShown: false, title: "Home" }}
@@ -23,11 +29,6 @@ export default function App() {
               name="ChangeName"
               component={ChangeName}
               options={{ headerShown: false, title: "Change name" }}
-            />
-            <Stack.Screen
-              name="CreateProject"
-              component={CreateProject}
-              options={{ headerShown: false }}
             />
           </Stack.Navigator>
         </NavigationContainer>

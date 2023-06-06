@@ -1,14 +1,27 @@
 import styled from "styled-components/native";
+import { StyleSheet } from "react-native";
 import theme from "../styles/theme";
+import { ReactNode } from "react";
 import { View } from "react-native";
 
-export const Card = styled(View)`
-  background: ${theme.colors.card};
-  opacity: 0.8;
-  border: 2px solid ${theme.colors.border};
-  box-shadow: 0 0 32px rgba(0, 0, 0, 0.2);
-  border-radius: 5px;
-  padding: 10px 20px;
-  margin: 10px;
-  flex-grow: 1;
-`;
+interface CardProps {
+  children: ReactNode;
+}
+
+export const Card = (props: CardProps) => {
+  return <View style={styles.card}>{props.children}</View>;
+};
+
+//Create stylesheets for the Card component
+const styles = StyleSheet.create({
+  card: {
+    backgroundColor: theme.colors.card,
+    opacity: 0.8,
+    borderColor: theme.colors.border,
+    borderWidth: 2,
+    borderRadius: 5,
+    padding: 10,
+    margin: 10,
+    flexGrow: 1,
+  },
+});

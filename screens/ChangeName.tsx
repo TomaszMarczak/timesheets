@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { Card } from "../components/Card";
-import { Text, Title } from "../components/Text";
+import { Title } from "../components/Text";
+import { Text } from "@rneui/themed";
 import { Button } from "../components/Button";
 import { SafeAreaView } from "../components/View";
 import { Pressable } from "react-native";
@@ -57,7 +58,6 @@ const ChangeName = () => {
           onKeyPress={(e) => {
             e.nativeEvent.key === "Enter" && handleSubmit();
           }}
-          errorMessage={error}
         />
         <Button onPress={handleSubmit}>
           <Text>Save</Text>
