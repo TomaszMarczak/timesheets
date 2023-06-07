@@ -14,6 +14,7 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <UserProvider>
+<<<<<<< HEAD
       <ThemeProvider theme={theme}>
         <SafeAreaProvider>
           <NavigationContainer>
@@ -37,6 +38,29 @@ export default function App() {
           </NavigationContainer>
         </SafeAreaProvider>
       </ThemeProvider>
+=======
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="CreateProject"
+              component={CreateProject}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="HomeScreen"
+              component={HomeScreen}
+              options={{ headerShown: false, title: "Home" }}
+            />
+            <Stack.Screen
+              name="ChangeName"
+              component={ChangeName}
+              options={{ headerShown: false, title: "Change name" }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </SafeAreaProvider>
+>>>>>>> bfe70abb82255da6cdf432a19380dffdccf5d364
     </UserProvider>
   );
 }
