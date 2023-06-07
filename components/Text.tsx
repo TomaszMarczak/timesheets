@@ -3,7 +3,7 @@ import { Text, TextProps } from "@rneui/themed";
 
 export const Title = (props: TextProps) => {
   return (
-    <Text h1 style={{ color: theme.colors.textPrimary }}>
+    <Text h1 style={{}}>
       {props.children}
     </Text>
   );
