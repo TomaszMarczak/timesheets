@@ -1,19 +1,20 @@
 import React, { useState, useRef } from "react";
 import { Card } from "../components/Card";
-import { Title } from "../components/Text";
+import { Subtitle, Title } from "../components/Text";
 import { Text } from "@rneui/themed";
 import { Button } from "../components/Button";
-import { SafeAreaView } from "../components/View";
+import { Row, SafeAreaView } from "../components/View";
 import { Pressable } from "react-native";
-import { Input } from "../components/Input";
+import { TextInput } from "../components/Input";
 import { useNavigation } from "@react-navigation/native";
 import { useUserContext } from "../context/UserContext";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 const ChangeName = () => {
   const { userName, setNewUserName } = useUserContext();
   const [error, setError] = useState<string>("");
   const newNameRef = useRef(userName);
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<any>>();
 
   const trimName = (name: string) => {
     return name.trim().replace(/\s{2,}/g, " ");
@@ -37,18 +38,24 @@ const ChangeName = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSave = () => {
     if (validateName(newNameRef.current)) {
       setNewUserName(trimName(newNameRef.current));
       navigation.goBack();
     }
   };
 
+  const handleCancel = async () => {
+    //Go back to HomeScreen
+    navigation.navigate("HomeScreen", { isLoading: false });
+  };
+
   return (
     <SafeAreaView>
+      <Title>Change your name</Title>
       <Card>
-        <Title>Enter your name:</Title>
-        <Input
+        <Subtitle>Enter your name:</Subtitle>
+        <TextInput
           placeholder="Enter your name..."
           defaultValue={userName}
           onChange={(e) => {
@@ -56,13 +63,18 @@ const ChangeName = () => {
           }}
           selectTextOnFocus
           onKeyPress={(e) => {
-            e.nativeEvent.key === "Enter" && handleSubmit();
+            e.nativeEvent.key === "Enter" && handleSave();
           }}
         />
-        <Button onPress={handleSubmit}>
+      </Card>
+      <Row>
+        <Button secondary onPress={handleCancel}>
+          <Text>Cancel</Text>
+        </Button>
+        <Button primary onPress={handleSave}>
           <Text>Save</Text>
         </Button>
-      </Card>
+      </Row>
     </SafeAreaView>
   );
 };

@@ -1,20 +1,23 @@
-import { Row, SafeAreaView, ScrollView } from "../components/View";
+import { Row, SafeAreaView } from "../components/View";
 import { ButtonGroup, Overlay } from "@rneui/themed";
-import { Title } from "../components/Text";
+import { Subtitle, Title } from "../components/Text";
 import { Text } from "@rneui/themed";
 import { Button } from "../components/Button";
-import { View } from "../components/View";
-import { Input } from "../components/Input";
+import { Container } from "../components/View";
+import { NumericInput, TextInput } from "../components/Input";
 import { useEffect, useState } from "react";
 import uuid from "react-native-uuid";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Project } from "../models/Project";
-import { TouchableOpacity } from "react-native";
 import { useUserContext } from "../context/UserContext";
-import { WeekdaySelectableButton } from "../components/SelectableButton";
 import { Card } from "../components/Card";
+import { ScrollView } from "react-native";
+import {
+  WeekdaySelectableButton,
+  weekdays,
+} from "../components/WeekdaySelectableButton";
 
 const CreateProject = () => {
   const { userId } = useUserContext();
@@ -29,16 +32,6 @@ const CreateProject = () => {
   });
   const [visible, setVisible] = useState<number | null>();
 
-  const weekdays = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ];
-
   const handleSave = async () => {
     const project: Project = {
       id: projectId,
@@ -47,6 +40,7 @@ const CreateProject = () => {
       workingHours: workingHours,
       contractors: [],
     };
+
     //Save to local storage projects array
     const projects = await AsyncStorage.getItem("projects");
     if (projects) {
@@ -56,30 +50,11 @@ const CreateProject = () => {
     } else {
       await AsyncStorage.setItem("projects", JSON.stringify([project]));
     }
-    //Go back to HomeScreen
     navigation.navigate("HomeScreen", { isLoading: false });
   };
   const handleCancel = async () => {
-    //Go back to HomeScreen
     navigation.navigate("HomeScreen", { isLoading: false });
   };
-
-  const addDefaultWorkingHours = (index: number) => {
-    const newWorkingHours = [...workingHours];
-    newWorkingHours[index] = defaultWorkingHours as number;
-    setWorkingHours(newWorkingHours);
-  };
-
-  const clearWorkingHours = (index: number) => {
-    const newWorkingHours = [...workingHours];
-    newWorkingHours[index] = 0;
-    setWorkingHours(newWorkingHours);
-  };
-
-  const handlePress = (index: number) =>
-    workingHours[index] === 0
-      ? addDefaultWorkingHours(index)
-      : clearWorkingHours(index);
 
   const handleChangeWorkingHours = (value: string) => {
     //Enter only numbers, cannot be less than 0 and more than 24.
@@ -108,82 +83,27 @@ const CreateProject = () => {
       setWorkingHours(newWorkingHours);
     }
   };
-  const buttons = weekdays.map((weekday, index) => {
-    return {
-      element: () => (
-        <TouchableOpacity
-          onLongPress={() => setVisible(index)}
-          style={{
-            width: "100%",
-            height: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: workingHours[index] === 0 ? "white" : "lightblue",
-          }}
-          onPress={() => handlePress(index)}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
-              height: "100%",
-            }}
-          >
-            <Text
-              style={{
-                textAlign: "center",
-                flex: 1,
-                color: workingHours[index] === 0 ? "black" : "darkblue",
-              }}
-            >
-              {weekday}
-            </Text>
-            {workingHours[index] !== 0 && (
-              <View
-                style={{
-                  position: "absolute",
-                  right: 0,
-                  width: "20%",
-                  height: "100%",
-                  backgroundColor: "white",
-                  justifyContent: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color: "darkblue",
-                  }}
-                >
-                  {workingHours[index]}h
-                </Text>
-              </View>
-            )}
-          </View>
-        </TouchableOpacity>
-      ),
-    };
-  });
+
+  //Testing
+  useEffect(() => {
+    console.log(workingHours);
+  }, [workingHours]);
 
   return (
     <ScrollView>
       <SafeAreaView>
         <Title>Create new project</Title>
         <Card>
-          <Text>Project name</Text>
-          <Input
+          <Subtitle>Project name</Subtitle>
+          <TextInput
             onChangeText={setProjectName}
             value={projectName}
             placeholder="Enter project name..."
           />
         </Card>
         <Card>
-          <Text>Typical working hours</Text>
-          <Input
-            keyboardType="numeric"
-            selectTextOnFocus
+          <Subtitle>Typical working hours</Subtitle>
+          <NumericInput
             value={defaultWorkingHours?.toString()}
             onChangeText={(value) => handleChangeWorkingHours(value)}
             onBlur={(e) => {
@@ -195,20 +115,18 @@ const CreateProject = () => {
           />
         </Card>
         <Card>
-          <Text>Typical project working days</Text>
-          <ButtonGroup buttons={buttons} vertical selectMultiple />
-          {visible != null && (
-            <Overlay isVisible={true} onBackdropPress={() => setVisible(null)}>
-              <Text>{`Edit working hours for ${
-                weekdays[visible as number]
-              }`}</Text>
-              <Input
-                value={workingHours[visible as number].toString()}
-                onChangeText={handleChangeWeekdayWorkingHours}
-                selectTextOnFocus
-              />
-            </Overlay>
-          )}
+          <Subtitle>Typical project working days</Subtitle>
+          {weekdays.map((weekday, index) => (
+            <WeekdaySelectableButton
+              key={index}
+              weekday={weekday}
+              index={index}
+              defaultWorkingHours={defaultWorkingHours}
+              workingHours={workingHours}
+              setVisible={() => setVisible(index)}
+              setWorkingHours={setWorkingHours}
+            />
+          ))}
         </Card>
         <Row>
           <Button secondary onPress={handleCancel}>
@@ -218,6 +136,20 @@ const CreateProject = () => {
             <Text>Save</Text>
           </Button>
         </Row>
+        {visible != null && (
+          <Overlay isVisible={true} onBackdropPress={() => setVisible(null)}>
+            <Card>
+              <Subtitle>{`Edit working hours for ${
+                weekdays[visible as number]
+              }`}</Subtitle>
+              <TextInput
+                value={workingHours[visible as number].toString()}
+                onChangeText={handleChangeWeekdayWorkingHours}
+                selectTextOnFocus
+              />
+            </Card>
+          </Overlay>
+        )}
       </SafeAreaView>
     </ScrollView>
   );

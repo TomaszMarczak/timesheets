@@ -1,10 +1,8 @@
 import React from "react";
-
-import { SafeAreaView } from "../components/View";
+import { Row, SafeAreaView } from "../components/View";
 import { Card } from "../components/Card";
 import { Title } from "../components/Text";
 import { Text } from "@rneui/themed";
-import { Link } from "@react-navigation/native";
 import { useUserContext } from "../context/UserContext";
 import { LinkButton } from "../components/Button";
 
@@ -17,15 +15,19 @@ const HomeScreen = () => {
         <Title>User</Title>
         <Text>Username: {userName}</Text>
         <Text>UserId: {userId}</Text>
-        <LinkButton to="ChangeName">
-          <Text>Change name</Text>
-        </LinkButton>
+        <Row>
+          <LinkButton to="ChangeName">
+            <Text>Change name</Text>
+          </LinkButton>
+        </Row>
       </Card>
       <Card>
         <Title>Projects</Title>
-        <LinkButton to="CreateProject">
-          <Text>Create new</Text>
-        </LinkButton>
+        <Row>
+          <LinkButton to="CreateProject">
+            <Text>Create new</Text>
+          </LinkButton>
+        </Row>
       </Card>
     </SafeAreaView>
   );

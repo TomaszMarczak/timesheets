@@ -4,7 +4,6 @@ import ChangeName from "./screens/ChangeName";
 import HomeScreen from "./screens/HomeScreen";
 import CreateProject from "./screens/CreateProject";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { SafeAreaView } from "./components/View";
 import { UserProvider } from "./context/UserContext";
 import { ThemeProvider } from "@rneui/themed";
 import { theme } from "./styles/theme";

@@ -1,10 +1,9 @@
-import styled from "styled-components/native";
 import { Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { StyleSheet } from "react-native";
 
-interface ButtonProps extends React.ComponentProps<typeof Pressable> {
+export interface ButtonProps extends React.ComponentProps<typeof Pressable> {
   primary?: boolean;
   secondary?: boolean;
   active?: boolean;
@@ -35,12 +34,12 @@ export const LinkButton = ({ to, ...props }: LinkButtonProps) => {
 const styles = StyleSheet.create({
   button: {
     color: "primary",
-    padding: 12,
-    margin: 10,
-    minWidth: 100,
-    fontWeight: "600",
-    fontSize: 16,
+    borderWidth: 2,
+    borderColor: "black",
     borderRadius: 5,
+    padding: 12,
+    marginVertical: 5,
+    minWidth: 150,
     textAlign: "center",
     alignItems: "center",
     cursor: "pointer",
