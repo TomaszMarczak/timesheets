@@ -18,6 +18,8 @@ import {
   WeekdaySelectableButton,
   weekdays,
 } from "../components/WeekdaySelectableButton";
+import { Layout } from "../components/Layout";
+import { WeekdayModal } from "../components/WeekdayModal";
 
 const CreateProject = () => {
   const { userId } = useUserContext();
@@ -27,10 +29,10 @@ const CreateProject = () => {
   const [defaultWorkingHours, setDefaultWorkingHours] = useState<number | "">(
     12 as number
   );
-  const [workingHours, setWorkingHours] = useState(() => {
-    return [0, 0, 0, 0, 0, 0, 0];
-  });
-  const [visible, setVisible] = useState<number | null>();
+  const [workingHours, setWorkingHours] = useState<number[]>([
+    0, 0, 0, 0, 0, 0, 0,
+  ]);
+  const [modalValue, setModalValue] = useState<number | null>();
 
   const handleSave = async () => {
     const project: Project = {
@@ -40,7 +42,6 @@ const CreateProject = () => {
       workingHours: workingHours,
       contractors: [],
     };
-
     //Save to local storage projects array
     const projects = await AsyncStorage.getItem("projects");
     if (projects) {
@@ -53,6 +54,11 @@ const CreateProject = () => {
     navigation.navigate("HomeScreen", { isLoading: false });
   };
   const handleCancel = async () => {
+    //Set all the values to default
+    setProjectName("");
+    setProjectId(uuid.v4() as string);
+    setDefaultWorkingHours(12);
+    setWorkingHours([0, 0, 0, 0, 0, 0, 0]);
     navigation.navigate("HomeScreen", { isLoading: false });
   };
 
@@ -66,24 +72,6 @@ const CreateProject = () => {
     if (!isNaN(parseInt(value))) setDefaultWorkingHours(parseInt(value));
   };
 
-  const handleChangeWeekdayWorkingHours = (value: string) => {
-    //Enter only numbers, cannot be less than 0 and more than 24.
-    if (parseInt(value) < 0 || parseInt(value) > 24) return;
-    if (value.startsWith("0") && /\D/.test(value)) return;
-    if (value === "" || value === "0" || value === "00") {
-      const newWorkingHours = [...workingHours];
-      newWorkingHours[visible as number] = 0;
-      setWorkingHours(newWorkingHours);
-      return;
-    }
-    //If the value is not empty, set it to the working hours array.
-    if (!isNaN(parseInt(value))) {
-      const newWorkingHours = [...workingHours];
-      newWorkingHours[visible as number] = parseInt(value);
-      setWorkingHours(newWorkingHours);
-    }
-  };
-
   //Testing
   useEffect(() => {
     console.log(workingHours);
@@ -91,7 +79,7 @@ const CreateProject = () => {
 
   return (
     <ScrollView>
-      <SafeAreaView>
+      <Layout>
         <Title>Create new project</Title>
         <Card>
           <Subtitle>Project name</Subtitle>
@@ -123,34 +111,24 @@ const CreateProject = () => {
               index={index}
               defaultWorkingHours={defaultWorkingHours}
               workingHours={workingHours}
-              setVisible={() => setVisible(index)}
+              openModal={() => setModalValue(index)}
               setWorkingHours={setWorkingHours}
             />
           ))}
         </Card>
         <Row>
-          <Button secondary onPress={handleCancel}>
-            <Text>Cancel</Text>
-          </Button>
-          <Button primary onPress={handleSave}>
-            <Text>Save</Text>
-          </Button>
+          <Button secondary onPress={handleCancel} title="Cancel" />
+          <Button primary onPress={handleSave} title="Save" />
         </Row>
-        {visible != null && (
-          <Overlay isVisible={true} onBackdropPress={() => setVisible(null)}>
-            <Card>
-              <Subtitle>{`Edit working hours for ${
-                weekdays[visible as number]
-              }`}</Subtitle>
-              <TextInput
-                value={workingHours[visible as number].toString()}
-                onChangeText={handleChangeWeekdayWorkingHours}
-                selectTextOnFocus
-              />
-            </Card>
-          </Overlay>
+        {modalValue != null && (
+          <WeekdayModal
+            weekday={modalValue}
+            workingHours={workingHours}
+            setWorkingHours={setWorkingHours}
+            closeModal={() => setModalValue(null)}
+          />
         )}
-      </SafeAreaView>
+      </Layout>
     </ScrollView>
   );
 };

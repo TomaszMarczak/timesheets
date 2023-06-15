@@ -5,31 +5,28 @@ import { Title } from "../components/Text";
 import { Text } from "@rneui/themed";
 import { useUserContext } from "../context/UserContext";
 import { LinkButton } from "../components/Button";
+import { Layout } from "../components/Layout";
 
 const HomeScreen = () => {
   const { userName, userId } = useUserContext();
 
   return (
-    <SafeAreaView>
+    <Layout>
       <Card>
         <Title>User</Title>
         <Text>Username: {userName}</Text>
         <Text>UserId: {userId}</Text>
         <Row>
-          <LinkButton to="ChangeName">
-            <Text>Change name</Text>
-          </LinkButton>
+          <LinkButton to="ChangeName" title="Change name" />
         </Row>
       </Card>
       <Card>
         <Title>Projects</Title>
         <Row>
-          <LinkButton to="CreateProject">
-            <Text>Create new</Text>
-          </LinkButton>
+          <LinkButton to="CreateProject" title="Create new" />
         </Row>
       </Card>
-    </SafeAreaView>
+    </Layout>
   );
 };
 

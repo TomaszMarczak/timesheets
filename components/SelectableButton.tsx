@@ -1,4 +1,3 @@
-import styled from "styled-components/native";
 import { TouchableOpacity } from "react-native";
 import { ReactNode, useState } from "react";
 import { Button } from "./Button";

@@ -16,22 +16,19 @@ export default function App() {
       <ThemeProvider theme={theme}>
         <SafeAreaProvider>
           <NavigationContainer>
-            <Stack.Navigator>
+            <Stack.Navigator
+              initialRouteName="CreateProject"
+              screenOptions={{
+                headerShown: false,
+              }}
+            >
               <Stack.Screen
                 name="HomeScreen"
                 component={HomeScreen}
-                options={{ headerShown: false, title: "Home" }}
+                options={{ title: "Home" }}
               />
-              <Stack.Screen
-                name="CreateProject"
-                component={CreateProject}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="ChangeName"
-                component={ChangeName}
-                options={{ headerShown: false, title: "Change name" }}
-              />
+              <Stack.Screen name="CreateProject" component={CreateProject} />
+              <Stack.Screen name="ChangeName" component={ChangeName} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaProvider>

@@ -9,6 +9,7 @@ import { TextInput } from "../components/Input";
 import { useNavigation } from "@react-navigation/native";
 import { useUserContext } from "../context/UserContext";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { Layout } from "../components/Layout";
 
 const ChangeName = () => {
   const { userName, setNewUserName } = useUserContext();
@@ -51,7 +52,7 @@ const ChangeName = () => {
   };
 
   return (
-    <SafeAreaView>
+    <Layout>
       <Title>Change your name</Title>
       <Card>
         <Subtitle>Enter your name:</Subtitle>
@@ -68,14 +69,10 @@ const ChangeName = () => {
         />
       </Card>
       <Row>
-        <Button secondary onPress={handleCancel}>
-          <Text>Cancel</Text>
-        </Button>
-        <Button primary onPress={handleSave}>
-          <Text>Save</Text>
-        </Button>
+        <Button secondary onPress={handleCancel} title="Cancel" />
+        <Button primary onPress={handleSave} title="Save" />
       </Row>
-    </SafeAreaView>
+    </Layout>
   );
 };
 

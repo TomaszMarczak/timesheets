@@ -1,9 +1,18 @@
-import { Pressable } from "react-native";
+import {
+  Pressable,
+  PressableProps,
+  StyleProp,
+  View,
+  ViewStyle,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { StyleSheet } from "react-native";
+import { useTheme } from "@rneui/themed";
+import { Text } from "@rneui/themed";
 
-export interface ButtonProps extends React.ComponentProps<typeof Pressable> {
+export interface ButtonProps extends PressableProps {
+  title?: string;
   primary?: boolean;
   secondary?: boolean;
   active?: boolean;
@@ -14,9 +23,23 @@ interface LinkButtonProps extends ButtonProps {
 }
 
 export const Button = (props: ButtonProps) => {
+  const { theme } = useTheme();
+  const staticStyles = makeStyles(theme.colors);
+  const dynamicStyles = {
+    ...staticStyles.button,
+    ...(props.primary && staticStyles.primary),
+    ...(props.secondary && staticStyles.secondary),
+    ...(props.active && staticStyles.active),
+  } as StyleProp<ViewStyle>;
+  const buttonStyle = StyleSheet.compose(
+    dynamicStyles,
+    props.style as StyleProp<ViewStyle>
+  );
+
   return (
-    <Pressable style={styles.button} {...props}>
-      {props.children}
+    <Pressable style={buttonStyle} {...props}>
+      <Text style={{ fontWeight: "600" }}>{props.title}</Text>
+      {props.children as React.ReactNode}
     </Pressable>
   );
 };
@@ -31,17 +54,27 @@ export const LinkButton = ({ to, ...props }: LinkButtonProps) => {
   return <Button onPress={handlePress} {...props} />;
 };
 
-const styles = StyleSheet.create({
-  button: {
-    color: "primary",
-    borderWidth: 2,
-    borderColor: "black",
-    borderRadius: 5,
-    padding: 12,
-    marginVertical: 5,
-    minWidth: 150,
-    textAlign: "center",
-    alignItems: "center",
-    cursor: "pointer",
-  },
-});
+const makeStyles = (colors: any) =>
+  StyleSheet.create({
+    button: {
+      backgroundColor: colors.card,
+      borderColor: colors.border,
+      borderWidth: 2,
+      borderRadius: 5,
+      padding: 12,
+      marginVertical: 5,
+      minWidth: 150,
+      textAlign: "center",
+      cursor: "pointer",
+      userSelect: "none",
+    },
+    primary: {
+      backgroundColor: colors.primary,
+    },
+    secondary: {
+      backgroundColor: colors.secondary,
+    },
+    active: {
+      backgroundColor: colors.active,
+    },
+  });

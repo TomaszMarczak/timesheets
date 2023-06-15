@@ -2,22 +2,23 @@ import { createTheme } from "@rneui/themed";
 
 export const theme = createTheme({
   lightColors: {
-    primary: "#e7e7e8",
+    text: "#000",
+    border: "#000",
+    card: "#fff",
+    active: "#96d470",
   },
   darkColors: {
-    primary: "#000",
+    text: "#fff",
+    card: "#333341ce",
+    active: "#96d470",
+    border: "#ffffff82",
+  },
+  components: {
+    Text: (props, theme) => ({
+      style: {
+        color: theme.colors.text,
+      },
+    }),
   },
   mode: "light",
 });
-
-const customColors = {
-  primary: "#6200ee",
-  textPrimary: "#00000",
-  secondary: "#03dac6",
-  textSecondary: "#",
-  background: `rgb(240,240,240)`,
-  border: "#000",
-  card: "#ffffff",
-  text: "#000000",
-  success: "#135E01",
-};

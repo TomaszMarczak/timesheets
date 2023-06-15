@@ -1,13 +1,14 @@
+import { StyleSheet } from "react-native";
 import { useState } from "react";
 import { Button, ButtonProps } from "./Button";
-import { Text } from "@rneui/themed";
+import { Text, useTheme } from "@rneui/themed";
 import { Container, Row } from "./View";
 
 interface WeekdayButtonProps extends ButtonProps {
   weekday: string;
   index: number;
   workingHours: number[];
-  setVisible: (index: number) => void;
+  openModal: () => void;
   setWorkingHours: (workingHours: number[]) => void;
   defaultWorkingHours: number | "";
 }
@@ -29,10 +30,8 @@ export const WeekdaySelectableButton = (props: WeekdayButtonProps) => {
     index,
     defaultWorkingHours,
     setWorkingHours,
-    setVisible,
+    openModal,
   } = props;
-
-  const [active, setActive] = useState(false);
 
   const addDefaultWorkingHours = () => {
     const newWorkingHours = [...workingHours];
@@ -46,35 +45,44 @@ export const WeekdaySelectableButton = (props: WeekdayButtonProps) => {
     setWorkingHours(newWorkingHours);
   };
 
-  const handlePress = () =>
+  const handlePress = () => {
     workingHours[index] === 0 ? addDefaultWorkingHours() : clearWorkingHours();
+  };
+
+  const { theme } = useTheme();
+  const styles = makeStyles(theme.colors);
 
   return (
-    <Button onLongPress={() => setVisible(index)} onPress={() => handlePress()}>
-      <Row>
-        <Text>{weekday}</Text>
-        {workingHours[index] !== 0 && (
-          <Container
-            style={{
-              position: "absolute",
-              right: 0,
-              width: "20%",
-              height: "100%",
-              backgroundColor: "white",
-              justifyContent: "center",
-            }}
-          >
-            <Text
-              style={{
-                textAlign: "center",
-                color: "darkblue",
-              }}
-            >
-              {workingHours[index]}h
-            </Text>
-          </Container>
-        )}
-      </Row>
+    <Button
+      active={workingHours[index] !== 0}
+      onLongPress={() => openModal()}
+      onPress={() => handlePress()}
+      title={weekday}
+    >
+      {workingHours[index] !== 0 && (
+        <Container style={styles.hoursContainer}>
+          <Text style={{ fontWeight: "600" }}>{workingHours[index]}h</Text>
+        </Container>
+      )}
     </Button>
   );
 };
+
+const makeStyles = (colors: any) =>
+  StyleSheet.create({
+    row: {
+      position: "relative",
+      backgroundColor: "red",
+      width: "100%",
+    },
+    hoursContainer: {
+      position: "absolute",
+      justifyContent: "center",
+      borderLeftWidth: 2,
+      borderColor: colors.border,
+      height: "100%",
+      width: "15%",
+      right: 0,
+      top: 0,
+    },
+  });
