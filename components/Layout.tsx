@@ -12,6 +12,7 @@ export const Layout = (props: LayoutProps) => {
     marginHorizontal: "auto",
   };
   const outerLayout = {
+    padding: 10,
     flex: 1,
     backgroundColor: theme.colors.background,
   };

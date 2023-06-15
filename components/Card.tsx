@@ -2,7 +2,6 @@ import { StyleSheet } from "react-native";
 import { ReactNode } from "react";
 import { View, ViewProps } from "react-native";
 import { useTheme } from "@rneui/themed";
-import { withTheme } from "@rneui/themed";
 
 interface CardProps extends ViewProps {
   children: ReactNode;
@@ -23,6 +22,9 @@ const makeStyles = (colors: any) =>
       borderWidth: 2,
       borderRadius: 5,
       padding: 10,
-      margin: 10,
+      marginVertical: 10,
+      shadowColor: colors.border,
+      shadowRadius: 20,
+      shadowOpacity: 0.5,
     },
   });

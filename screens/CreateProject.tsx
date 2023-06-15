@@ -72,11 +72,6 @@ const CreateProject = () => {
     if (!isNaN(parseInt(value))) setDefaultWorkingHours(parseInt(value));
   };
 
-  //Testing
-  useEffect(() => {
-    console.log(workingHours);
-  }, [workingHours]);
-
   return (
     <ScrollView>
       <Layout>

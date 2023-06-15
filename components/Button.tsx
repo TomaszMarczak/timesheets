@@ -16,6 +16,7 @@ export interface ButtonProps extends PressableProps {
   primary?: boolean;
   secondary?: boolean;
   active?: boolean;
+  cStyles?: StyleProp<ViewStyle>;
 }
 
 interface LinkButtonProps extends ButtonProps {
@@ -31,14 +32,14 @@ export const Button = (props: ButtonProps) => {
     ...(props.secondary && staticStyles.secondary),
     ...(props.active && staticStyles.active),
   } as StyleProp<ViewStyle>;
-  const buttonStyle = StyleSheet.compose(
-    dynamicStyles,
-    props.style as StyleProp<ViewStyle>
-  );
+
+  const buttonStyle = [dynamicStyles, props.cStyles];
 
   return (
     <Pressable style={buttonStyle} {...props}>
-      <Text style={{ fontWeight: "600" }}>{props.title}</Text>
+      <Text style={{ fontWeight: "600", textAlign: "center" }}>
+        {props.title}
+      </Text>
       {props.children as React.ReactNode}
     </Pressable>
   );

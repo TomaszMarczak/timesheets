@@ -1,8 +1,7 @@
-import { StyleSheet } from "react-native";
-import { useState } from "react";
+import { StyleSheet, View } from "react-native";
 import { Button, ButtonProps } from "./Button";
 import { Text, useTheme } from "@rneui/themed";
-import { Container, Row } from "./View";
+import { Container } from "./View";
 
 interface WeekdayButtonProps extends ButtonProps {
   weekday: string;
@@ -53,36 +52,44 @@ export const WeekdaySelectableButton = (props: WeekdayButtonProps) => {
   const styles = makeStyles(theme.colors);
 
   return (
-    <Button
-      active={workingHours[index] !== 0}
-      onLongPress={() => openModal()}
-      onPress={() => handlePress()}
-      title={weekday}
-    >
+    <View style={styles.buttonContainer}>
+      <Button
+        active={workingHours[index] !== 0}
+        onLongPress={() => openModal()}
+        onPress={() => handlePress()}
+        title={weekday}
+        cStyles={{ marginVertical: 0 }}
+      />
       {workingHours[index] !== 0 && (
         <Container style={styles.hoursContainer}>
-          <Text style={{ fontWeight: "600" }}>{workingHours[index]}h</Text>
+          <Text
+            style={{
+              fontWeight: "600",
+              textAlign: "center",
+            }}
+          >
+            {workingHours[index]}h
+          </Text>
         </Container>
       )}
-    </Button>
+    </View>
   );
 };
 
 const makeStyles = (colors: any) =>
   StyleSheet.create({
-    row: {
-      position: "relative",
-      backgroundColor: "red",
-      width: "100%",
-    },
     hoursContainer: {
       position: "absolute",
       justifyContent: "center",
-      borderLeftWidth: 2,
+      alignItems: "center",
       borderColor: colors.border,
+      borderLeftWidth: 2,
       height: "100%",
       width: "15%",
       right: 0,
       top: 0,
+    },
+    buttonContainer: {
+      marginVertical: 2,
     },
   });

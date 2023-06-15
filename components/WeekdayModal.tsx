@@ -1,8 +1,10 @@
-import { Overlay } from "@rneui/themed";
+import { Overlay, useTheme } from "@rneui/themed";
 import { Card } from "../components/Card";
 import { weekdays } from "./WeekdaySelectableButton";
-import { Subtitle } from "./Text";
+import { Subtitle, Title } from "./Text";
 import { NumericInput } from "./Input";
+import { Button } from "./Button";
+import { Row } from "./View";
 
 interface WeekdayModalProps {
   weekday: number | null; //change to weekday
@@ -13,6 +15,8 @@ interface WeekdayModalProps {
 
 export const WeekdayModal = (props: WeekdayModalProps) => {
   const { weekday, workingHours, setWorkingHours, closeModal } = props;
+  const { theme } = useTheme();
+  const styles = makeStyles(theme.colors);
 
   const handleChangeWeekdayWorkingHours = (value: string) => {
     //Enter only numbers, cannot be less than 0 and more than 24.
@@ -33,11 +37,14 @@ export const WeekdayModal = (props: WeekdayModalProps) => {
   };
 
   return (
-    <Overlay isVisible={true} onBackdropPress={closeModal}>
+    <Overlay
+      isVisible={true}
+      onBackdropPress={closeModal}
+      overlayStyle={{ ...styles.overlay }}
+    >
+      <Title style={styles.title}>{weekdays[props.weekday as number]}</Title>
       <Card>
-        <Subtitle>{`Edit working hours for ${
-          weekdays[props.weekday as number]
-        }`}</Subtitle>
+        <Subtitle>Working hours</Subtitle>
         <NumericInput
           value={props.workingHours[weekday as number].toString()}
           onChangeText={handleChangeWeekdayWorkingHours}
@@ -47,3 +54,16 @@ export const WeekdayModal = (props: WeekdayModalProps) => {
     </Overlay>
   );
 };
+
+const makeStyles = (colors: any) => ({
+  overlay: {
+    backgroundColor: colors.card,
+    paddingHorizontal: 50,
+    paddingVertical: 20,
+    borderRadius: 10,
+  },
+  title: {
+    color: colors.active,
+    margin: "auto",
+  },
+});
