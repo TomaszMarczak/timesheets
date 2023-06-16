@@ -39,7 +39,7 @@ const CreateProject = () => {
   const handleSave = async () => {
     const project: Project = {
       id: projectId,
-      name: projectName,
+      name: projectName ? projectName : "Default project name",
       owner: { id: userId, name: userName },
       workingHours: workingHours,
       contractors: [],
