@@ -16,6 +16,7 @@ export interface ButtonProps extends PressableProps {
   primary?: boolean;
   secondary?: boolean;
   active?: boolean;
+  danger?: boolean;
   cStyles?: StyleProp<ViewStyle>;
 }
 
@@ -31,6 +32,7 @@ export const Button = (props: ButtonProps) => {
     ...(props.primary && staticStyles.primary),
     ...(props.secondary && staticStyles.secondary),
     ...(props.active && staticStyles.active),
+    ...(props.danger && staticStyles.danger),
   } as StyleProp<ViewStyle>;
 
   const buttonStyle = [dynamicStyles, props.cStyles];
@@ -77,5 +79,8 @@ const makeStyles = (colors: any) =>
     },
     active: {
       backgroundColor: colors.active,
+    },
+    danger: {
+      backgroundColor: colors.warning,
     },
   });

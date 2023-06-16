@@ -1,10 +1,10 @@
 import { Overlay, useTheme } from "@rneui/themed";
-import { Card } from "../components/Card";
+import { Card } from "../Card";
 import { weekdays } from "./WeekdaySelectableButton";
-import { Subtitle, Title } from "./Text";
-import { NumericInput } from "./Input";
-import { Button } from "./Button";
-import { Row } from "./View";
+import { Subtitle, Title } from "../Text";
+import { NumericInput } from "../Input";
+import { Button } from "../Button";
+import { Row } from "../View";
 
 interface WeekdayModalProps {
   weekday: number | null; //change to weekday
@@ -40,7 +40,7 @@ export const WeekdayModal = (props: WeekdayModalProps) => {
     <Overlay
       isVisible={true}
       onBackdropPress={closeModal}
-      overlayStyle={{ ...styles.overlay }}
+      overlayStyle={styles.overlay}
     >
       <Title style={styles.title}>{weekdays[props.weekday as number]}</Title>
       <Card>
@@ -65,5 +65,6 @@ const makeStyles = (colors: any) => ({
   title: {
     color: colors.active,
     margin: "auto",
+    textAlign: "center" as "center",
   },
 });

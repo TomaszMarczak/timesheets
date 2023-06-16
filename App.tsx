@@ -7,32 +7,43 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { UserProvider } from "./context/UserContext";
 import { ThemeProvider } from "@rneui/themed";
 import { theme } from "./styles/theme";
+import { ProjectsProvider } from "./context/ProjectsContext";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <UserProvider>
-      <ThemeProvider theme={theme}>
-        <SafeAreaProvider>
-          <NavigationContainer>
-            <Stack.Navigator
-              initialRouteName="CreateProject"
-              screenOptions={{
-                headerShown: false,
-              }}
-            >
-              <Stack.Screen
-                name="HomeScreen"
-                component={HomeScreen}
-                options={{ title: "Home" }}
-              />
-              <Stack.Screen name="CreateProject" component={CreateProject} />
-              <Stack.Screen name="ChangeName" component={ChangeName} />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </SafeAreaProvider>
-      </ThemeProvider>
+      <ProjectsProvider>
+        <ThemeProvider theme={theme}>
+          <SafeAreaProvider>
+            <NavigationContainer>
+              <Stack.Navigator
+                initialRouteName="HomeScreen"
+                screenOptions={{
+                  headerShown: false,
+                }}
+              >
+                <Stack.Screen
+                  name="HomeScreen"
+                  component={HomeScreen}
+                  options={{ title: "Home" }}
+                />
+                <Stack.Screen
+                  name="CreateProject"
+                  component={CreateProject}
+                  options={{ title: "New project" }}
+                />
+                <Stack.Screen
+                  name="ChangeName"
+                  component={ChangeName}
+                  options={{ title: "Change name" }}
+                />
+              </Stack.Navigator>
+            </NavigationContainer>
+          </SafeAreaProvider>
+        </ThemeProvider>
+      </ProjectsProvider>
     </UserProvider>
   );
 }

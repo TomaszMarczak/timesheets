@@ -30,7 +30,6 @@ interface UserProviderProps {
 const UserProvider = ({ children }: UserProviderProps) => {
   const [userName, setUserName] = useState<string>("");
   const [userId, setUserId] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     loadUserId().then((id) => {

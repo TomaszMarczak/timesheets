@@ -17,12 +17,14 @@ import { ScrollView } from "react-native";
 import {
   WeekdaySelectableButton,
   weekdays,
-} from "../components/WeekdaySelectableButton";
+} from "../components/Weekdays/WeekdaySelectableButton";
 import { Layout } from "../components/Layout";
-import { WeekdayModal } from "../components/WeekdayModal";
+import { WeekdayModal } from "../components/Weekdays/WeekdayModal";
+import { useProjectsContext } from "../context/ProjectsContext";
 
 const CreateProject = () => {
-  const { userId } = useUserContext();
+  const { userId, userName } = useUserContext();
+  const { addProject } = useProjectsContext();
   const [projectName, setProjectName] = useState("");
   const [projectId, setProjectId] = useState(uuid.v4() as string);
   const navigation = useNavigation<StackNavigationProp<any>>();
@@ -38,28 +40,27 @@ const CreateProject = () => {
     const project: Project = {
       id: projectId,
       name: projectName,
-      owner: userId,
+      owner: { id: userId, name: userName },
       workingHours: workingHours,
       contractors: [],
+      date: new Date(),
     };
-    //Save to local storage projects array
-    const projects = await AsyncStorage.getItem("projects");
-    if (projects) {
-      const newProjects = JSON.parse(projects);
-      newProjects.push(project);
-      await AsyncStorage.setItem("projects", JSON.stringify(newProjects));
-    } else {
-      await AsyncStorage.setItem("projects", JSON.stringify([project]));
-    }
-    navigation.navigate("HomeScreen", { isLoading: false });
+
+    addProject(project);
+    setToDefault();
+    navigation.navigate("HomeScreen");
   };
+
   const handleCancel = async () => {
-    //Set all the values to default
+    setToDefault();
+    navigation.navigate("HomeScreen");
+  };
+
+  const setToDefault = () => {
     setProjectName("");
     setProjectId(uuid.v4() as string);
     setDefaultWorkingHours(12);
     setWorkingHours([0, 0, 0, 0, 0, 0, 0]);
-    navigation.navigate("HomeScreen", { isLoading: false });
   };
 
   const handleChangeWorkingHours = (value: string) => {

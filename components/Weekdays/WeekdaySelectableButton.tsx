@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native";
-import { Button, ButtonProps } from "./Button";
+import { Button, ButtonProps } from "../Button";
 import { Text, useTheme } from "@rneui/themed";
-import { Container } from "./View";
+import { Container } from "../View";
 
 interface WeekdayButtonProps extends ButtonProps {
   weekday: string;

@@ -4,11 +4,14 @@ import { Card } from "../components/Card";
 import { Title } from "../components/Text";
 import { Text } from "@rneui/themed";
 import { useUserContext } from "../context/UserContext";
+import { useProjectsContext } from "../context/ProjectsContext";
 import { LinkButton } from "../components/Button";
 import { Layout } from "../components/Layout";
+import { ProjectCard } from "../components/Project/ProjectCard";
 
 const HomeScreen = () => {
   const { userName, userId } = useUserContext();
+  const { projects } = useProjectsContext();
 
   return (
     <Layout>
@@ -25,6 +28,10 @@ const HomeScreen = () => {
         <Row>
           <LinkButton to="CreateProject" title="Create new" />
         </Row>
+        {projects &&
+          projects.map((project) => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
       </Card>
     </Layout>
   );
