@@ -6,7 +6,7 @@ import { Text } from "@rneui/themed";
 import { useUserContext } from "../context/UserContext";
 import { useProjectsContext } from "../context/ProjectsContext";
 import { LinkButton } from "../components/Button";
-import { Layout } from "../components/Layout";
+import { Layout } from "../components/Layouts/Layout";
 import { ProjectCard } from "../components/Project/ProjectCard";
 
 const HomeScreen = () => {
@@ -26,7 +26,7 @@ const HomeScreen = () => {
       <Card>
         <Title>Projects</Title>
         <Row>
-          <LinkButton to="CreateProject" title="Create new" />
+          <LinkButton to="CreateUpdateProject" title="Create new" />
         </Row>
         {projects &&
           projects.map((project) => (

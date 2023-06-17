@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { Button, ButtonProps } from "../Button";
-import { Text, useTheme } from "@rneui/themed";
+import { Colors, Text, useTheme } from "@rneui/themed";
 import { Container } from "../View";
 
 interface WeekdayButtonProps extends ButtonProps {
@@ -76,7 +76,7 @@ export const WeekdaySelectableButton = (props: WeekdayButtonProps) => {
   );
 };
 
-const makeStyles = (colors: any) =>
+const makeStyles = (colors: Colors) =>
   StyleSheet.create({
     hoursContainer: {
       position: "absolute",

@@ -4,12 +4,14 @@ import {
   loadProjects,
   removeProject,
   saveProject,
+  updateProjects,
 } from "../helpers/ProjectHandling";
 
 interface ProjectsContextTypes {
   projects: Project[];
   addProject: (project: Project) => void;
   deleteProject: (projectId: string) => void;
+  updateProject: (project: Project) => void;
 }
 interface ContextProviderProps {
   children: React.ReactNode;
@@ -30,6 +32,10 @@ export const ProjectsProvider = ({ children }: ContextProviderProps) => {
     removeProject(projectId).then((projects) => setProjects(projects));
   };
 
+  const updateProject = (project: Project) => {
+    updateProjects(project).then((projects) => setProjects(projects));
+  };
+
   useEffect(() => {
     loadProjects().then((projects) => {
       setProjects(projects);
@@ -37,7 +43,9 @@ export const ProjectsProvider = ({ children }: ContextProviderProps) => {
   }, []);
 
   return (
-    <ProjectsContext.Provider value={{ projects, addProject, deleteProject }}>
+    <ProjectsContext.Provider
+      value={{ projects, addProject, deleteProject, updateProject }}
+    >
       {children}
     </ProjectsContext.Provider>
   );

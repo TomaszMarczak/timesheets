@@ -8,8 +8,9 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { StyleSheet } from "react-native";
-import { useTheme } from "@rneui/themed";
+import { Colors, useTheme } from "@rneui/themed";
 import { Text } from "@rneui/themed";
+import { RootStackParamList } from "../models/Routing";
 
 export interface ButtonProps extends PressableProps {
   title?: string;
@@ -57,7 +58,7 @@ export const LinkButton = ({ to, ...props }: LinkButtonProps) => {
   return <Button onPress={handlePress} {...props} />;
 };
 
-const makeStyles = (colors: any) =>
+const makeStyles = (colors: Colors) =>
   StyleSheet.create({
     button: {
       backgroundColor: colors.card,

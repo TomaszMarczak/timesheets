@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { StyleSheet } from "react-native";
-import { Container, SafeAreaView } from "./View";
+import { Container, SafeAreaView } from "../View";
 import { useTheme } from "@rneui/themed";
 
 interface LayoutProps {

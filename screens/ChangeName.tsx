@@ -9,7 +9,7 @@ import { TextInput } from "../components/Input";
 import { useNavigation } from "@react-navigation/native";
 import { useUserContext } from "../context/UserContext";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { Layout } from "../components/Layout";
+import { Layout } from "../components/Layouts/Layout";
 
 const ChangeName = () => {
   const { userName, setNewUserName } = useUserContext();

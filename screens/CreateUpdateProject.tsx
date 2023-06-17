@@ -1,14 +1,10 @@
-import { Row, SafeAreaView } from "../components/View";
-import { ButtonGroup, Overlay } from "@rneui/themed";
+import { Row } from "../components/View";
 import { Subtitle, Title } from "../components/Text";
-import { Text } from "@rneui/themed";
 import { Button } from "../components/Button";
-import { Container } from "../components/View";
 import { NumericInput, TextInput } from "../components/Input";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import uuid from "react-native-uuid";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useNavigation } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Project } from "../models/Project";
 import { useUserContext } from "../context/UserContext";
@@ -18,22 +14,30 @@ import {
   WeekdaySelectableButton,
   weekdays,
 } from "../components/Weekdays/WeekdaySelectableButton";
-import { Layout } from "../components/Layout";
+import { Layout } from "../components/Layouts/Layout";
 import { WeekdayModal } from "../components/Weekdays/WeekdayModal";
 import { useProjectsContext } from "../context/ProjectsContext";
+import { RootStackParamList } from "../models/Routing";
 
-const CreateProject = () => {
+const CreateUpdateProject = () => {
+  const route =
+    useRoute<RouteProp<RootStackParamList, "CreateUpdateProject">>();
+  const project = route.params?.project;
   const { userId, userName } = useUserContext();
-  const { addProject } = useProjectsContext();
-  const [projectName, setProjectName] = useState("");
-  const [projectId, setProjectId] = useState(uuid.v4() as string);
+  const { addProject, updateProject } = useProjectsContext();
+  const [projectName, setProjectName] = useState(
+    project?.name ? project.name : ""
+  );
+  const [projectId, setProjectId] = useState(
+    project?.id ? project.id : (uuid.v4() as string)
+  );
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [defaultWorkingHours, setDefaultWorkingHours] = useState<number | "">(
     12 as number
   );
-  const [workingHours, setWorkingHours] = useState<number[]>([
-    0, 0, 0, 0, 0, 0, 0,
-  ]);
+  const [workingHours, setWorkingHours] = useState<number[]>(
+    project?.workingHours ? project.workingHours : [0, 0, 0, 0, 0, 0, 0]
+  );
   const [modalValue, setModalValue] = useState<number | null>();
 
   const handleSave = async () => {
@@ -46,7 +50,7 @@ const CreateProject = () => {
       date: new Date(),
     };
 
-    addProject(project);
+    route.params?.project ? updateProject(project) : addProject(project);
     setToDefault();
     navigation.navigate("HomeScreen");
   };
@@ -129,4 +133,4 @@ const CreateProject = () => {
   );
 };
 
-export default CreateProject;
+export default CreateUpdateProject;

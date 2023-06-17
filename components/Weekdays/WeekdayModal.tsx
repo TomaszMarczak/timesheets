@@ -1,4 +1,4 @@
-import { Overlay, useTheme } from "@rneui/themed";
+import { Colors, Overlay, useTheme } from "@rneui/themed";
 import { Card } from "../Card";
 import { weekdays } from "./WeekdaySelectableButton";
 import { Subtitle, Title } from "../Text";
@@ -55,7 +55,7 @@ export const WeekdayModal = (props: WeekdayModalProps) => {
   );
 };
 
-const makeStyles = (colors: any) => ({
+const makeStyles = (colors: Colors) => ({
   overlay: {
     backgroundColor: colors.card,
     paddingHorizontal: 50,

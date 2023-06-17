@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import ChangeName from "./screens/ChangeName";
 import HomeScreen from "./screens/HomeScreen";
-import CreateProject from "./screens/CreateProject";
+import CreateUpdateProject from "./screens/CreateUpdateProject";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { UserProvider } from "./context/UserContext";
 import { ThemeProvider } from "@rneui/themed";
@@ -30,8 +30,8 @@ export default function App() {
                   options={{ title: "Home" }}
                 />
                 <Stack.Screen
-                  name="CreateProject"
-                  component={CreateProject}
+                  name="CreateUpdateProject"
+                  component={CreateUpdateProject}
                   options={{ title: "New project" }}
                 />
                 <Stack.Screen

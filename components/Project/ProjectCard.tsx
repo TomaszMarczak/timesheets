@@ -1,5 +1,5 @@
 import { Container } from "../View";
-import { Text, useTheme } from "@rneui/themed";
+import { Colors, Text, useTheme } from "@rneui/themed";
 import { Pressable, StyleSheet } from "react-native";
 import { Project } from "../../models/Project";
 import { Card } from "../Card";
@@ -30,27 +30,29 @@ export const ProjectCard = ({ project }: ProjectCardProps) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
-    <Pressable onLongPress={() => setModalVisible(true)}>
-      <Card>
-        <Container style={styles.cardBody}>
-          <Text style={styles.cardTitle}>{project.name}</Text>
-          <Text style={styles.cardDate}>{formatDate(project.date)}</Text>
-        </Container>
-        <Container>
-          <Text style={styles.cardOwner}>{project.owner.name}</Text>
-        </Container>
-      </Card>
-      {modalVisible && (
-        <ProjectInfoModal
-          project={project}
-          closeModal={() => setModalVisible(false)}
-        />
-      )}
-    </Pressable>
+    <>
+      <Pressable onLongPress={() => setModalVisible(true)}>
+        <Card>
+          <Container style={styles.cardBody}>
+            <Text style={styles.cardTitle}>{project.name}</Text>
+            <Text style={styles.cardDate}>{formatDate(project.date)}</Text>
+          </Container>
+          <Container>
+            <Text style={styles.cardOwner}>{project.owner.name}</Text>
+          </Container>
+        </Card>
+        {modalVisible && (
+          <ProjectInfoModal
+            project={project}
+            closeModal={() => setModalVisible(false)}
+          />
+        )}
+      </Pressable>
+    </>
   );
 };
 
-const makeStyles = (colors: any) =>
+const makeStyles = (colors: Colors) =>
   StyleSheet.create({
     cardBody: {
       flexDirection: "row",

@@ -42,3 +42,21 @@ export const removeProject = async (projectId: string) => {
     return [];
   }
 };
+
+export const updateProjects = async (project: Project) => {
+  try {
+    const projects = await loadProjects();
+    const updatedProjects = projects.map((p: Project) => {
+      if (p.id === project.id) {
+        return project;
+      }
+      return p;
+    });
+    await AsyncStorage.setItem("projects", JSON.stringify(updatedProjects));
+    return updatedProjects;
+  } catch (e) {
+    console.log("Error updating projects");
+    console.log(e);
+    return [];
+  }
+};

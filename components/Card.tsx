@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { ReactNode } from "react";
 import { View, ViewProps } from "react-native";
-import { useTheme } from "@rneui/themed";
+import { Colors, useTheme } from "@rneui/themed";
 
 interface CardProps extends ViewProps {
   children: ReactNode;
@@ -13,7 +13,7 @@ export const Card = (props: CardProps) => {
 
   return <View style={styles.card}>{props.children}</View>;
 };
-const makeStyles = (colors: any) =>
+const makeStyles = (colors: Colors) =>
   StyleSheet.create({
     card: {
       opacity: 0.8,
