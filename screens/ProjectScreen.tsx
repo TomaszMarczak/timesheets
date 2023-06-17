@@ -27,16 +27,22 @@ const ProjectScreen = () => {
   const handleEdit = () => {
     navigation.navigate("CreateUpdateProject", { project: project });
   };
-
   const [projectShareModal, setProjectShareModal] = useState(false);
 
-  const openProjectShareModal = () => {
+  const shareableProject = JSON.stringify({
+    id: project.id,
+    name: project.name,
+    owner: project.owner,
+    workingHours: project.workingHours,
+    date: project.date,
+  });
+
+  const handleShare = () => {
     setProjectShareModal(true);
   };
-
   return (
     <Layout>
-      <Title>{project.name}</Title>
+      <Title style={{ textAlign: "center" }}>{project.name}</Title>
       <Row>
         <Text>{project.owner.name}</Text>
         <Text>{formatDate(project.date)}</Text>
@@ -46,7 +52,7 @@ const ProjectScreen = () => {
       </Card>
       <Card>
         <Subtitle>Controls</Subtitle>
-        <Button title="Share project" onPress={openProjectShareModal} />
+        <Button title="Share project" onPress={handleShare} />
         <Button title="Edit" onPress={handleEdit} />
         <Button
           title="Delete"
@@ -55,7 +61,7 @@ const ProjectScreen = () => {
         />
       </Card>
       <QRCodeModal
-        value="cośtam"
+        value={shareableProject}
         isVisible={projectShareModal}
         handleClose={() => setProjectShareModal(false)}
       />
