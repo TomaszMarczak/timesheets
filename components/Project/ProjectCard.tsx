@@ -3,11 +3,12 @@ import { Colors, Text, useTheme } from "@rneui/themed";
 import { Pressable, StyleSheet } from "react-native";
 import { Project } from "../../models/Project";
 import { Card } from "../Card";
-import { useProjectsContext } from "../../context/ProjectsContext";
 import { formatDate } from "../../helpers/utils";
 import Loadable from "react-loadable";
 import { useState } from "react";
 import { ProjectInfoModalProps } from "../Project/ProjectInfoModal";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
+import { RootStackParamList } from "../../models/Routing";
 
 const ProjectInfoModal = Loadable({
   loader: () => import("../Project/ProjectInfoModal"),
@@ -25,13 +26,21 @@ interface ProjectCardProps {
 export const ProjectCard = ({ project }: ProjectCardProps) => {
   const { theme } = useTheme();
   const styles = makeStyles(theme.colors);
-  const { deleteProject } = useProjectsContext();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const [modalVisible, setModalVisible] = useState(false);
 
+  const handleLongPress = () => {
+    setModalVisible(true);
+  };
+
+  const handlePress = () => {
+    navigation.navigate("ProjectScreen", { project });
+  };
+
   return (
     <>
-      <Pressable onLongPress={() => setModalVisible(true)}>
+      <Pressable onPress={handlePress} onLongPress={handleLongPress}>
         <Card>
           <Container style={styles.cardBody}>
             <Text style={styles.cardTitle}>{project.name}</Text>

@@ -31,7 +31,7 @@ const CreateUpdateProject = () => {
   const [projectId, setProjectId] = useState(
     project?.id ? project.id : (uuid.v4() as string)
   );
-  const navigation = useNavigation<StackNavigationProp<any>>();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [defaultWorkingHours, setDefaultWorkingHours] = useState<number | "">(
     12 as number
   );
@@ -57,7 +57,7 @@ const CreateUpdateProject = () => {
 
   const handleCancel = async () => {
     setToDefault();
-    navigation.navigate("HomeScreen");
+    navigation.pop();
   };
 
   const setToDefault = () => {

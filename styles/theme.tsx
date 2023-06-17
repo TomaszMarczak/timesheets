@@ -7,7 +7,7 @@ export const theme = createTheme({
     card: "#fff",
     active: "#70acd4",
     primary: "#96d4709e",
-    secondary: "#d47070",
+    secondary: "#d4b170",
   },
   darkColors: {
     text: "#e0e0e0",

@@ -10,6 +10,8 @@ export const Layout = (props: LayoutProps) => {
   const { theme } = useTheme();
   const innerLayout = {
     marginHorizontal: "auto",
+    maxWidth: 400,
+    minWidth: 200,
   };
   const outerLayout = {
     padding: 10,

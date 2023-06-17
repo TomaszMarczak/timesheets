@@ -8,6 +8,7 @@ import { UserProvider } from "./context/UserContext";
 import { ThemeProvider } from "@rneui/themed";
 import { theme } from "./styles/theme";
 import { ProjectsProvider } from "./context/ProjectsContext";
+import ProjectScreen from "./screens/ProjectScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -30,14 +31,19 @@ export default function App() {
                   options={{ title: "Home" }}
                 />
                 <Stack.Screen
+                  name="ChangeName"
+                  component={ChangeName}
+                  options={{ title: "Change name" }}
+                />
+                <Stack.Screen
                   name="CreateUpdateProject"
                   component={CreateUpdateProject}
                   options={{ title: "New project" }}
                 />
                 <Stack.Screen
-                  name="ChangeName"
-                  component={ChangeName}
-                  options={{ title: "Change name" }}
+                  name="ProjectScreen"
+                  component={ProjectScreen}
+                  options={{ title: "Project information" }}
                 />
               </Stack.Navigator>
             </NavigationContainer>

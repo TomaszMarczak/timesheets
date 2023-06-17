@@ -3,8 +3,9 @@ import { Project } from "./Project";
 
 export type RootStackParamList = {
   HomeScreen: undefined;
-  CreateUpdateProject: { project?: Project };
   ChangeName: undefined;
+  CreateUpdateProject: { project?: Project };
+  ProjectScreen: { project: Project };
 };
 
 export type NavigationProp = StackNavigationProp<RootStackParamList>;
