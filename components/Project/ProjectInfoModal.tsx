@@ -22,7 +22,11 @@ export const ProjectInfoModal = (props: ProjectInfoModalProps) => {
     closeModal();
   };
   return (
-    <Overlay isVisible onBackdropPress={closeModal} style={styles.overlay}>
+    <Overlay
+      isVisible
+      onBackdropPress={closeModal}
+      overlayStyle={styles.overlay}
+    >
       <Title style={styles.title}>{project.name}</Title>
       <Card>
         <Subtitle>Controls</Subtitle>
