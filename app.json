@@ -24,6 +24,14 @@
     "web": {
       "favicon": "./assets/favicon.png",
       "backgroundColor": "#f6f6f6"
-    }
+    },
+    "plugins": [
+      [
+        "expo-barcode-scanner",
+        {
+          "cameraPermission": "Allow TimeSheets to access camera."
+        }
+      ]
+    ]
   }
 }
