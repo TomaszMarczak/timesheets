@@ -13,7 +13,6 @@ export const QRCodeModal = ({ value, isVisible, handleClose }: QRCodeProps) => {
   const { theme } = useTheme();
   const styles = makeStyles(theme.colors);
 
-  console.log(value);
   // Calculate the size of the QRCode based on the screen size
   const size = Dimensions.get("window").width * 0.5;
 

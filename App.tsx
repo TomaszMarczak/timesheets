@@ -9,6 +9,7 @@ import { ThemeProvider } from "@rneui/themed";
 import { theme } from "./styles/theme";
 import { ProjectsProvider } from "./context/ProjectsContext";
 import ProjectScreen from "./screens/ProjectScreen";
+import { CameraScreen } from "./screens/CameraScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -44,6 +45,11 @@ export default function App() {
                   name="ProjectScreen"
                   component={ProjectScreen}
                   options={{ title: "Project information" }}
+                />
+                <Stack.Screen
+                  name="CameraScreen"
+                  component={CameraScreen}
+                  options={{ title: "Camera" }}
                 />
               </Stack.Navigator>
             </NavigationContainer>

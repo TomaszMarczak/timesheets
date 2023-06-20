@@ -37,6 +37,11 @@ const ProjectScreen = () => {
     date: project.date,
   });
 
+  const handleDelete = () => {
+    deleteProject(project.id);
+    navigation.navigate("HomeScreen");
+  };
+
   const handleShare = () => {
     setProjectShareModal(true);
   };
@@ -54,11 +59,7 @@ const ProjectScreen = () => {
         <Subtitle>Controls</Subtitle>
         <Button title="Share project" onPress={handleShare} />
         <Button title="Edit" onPress={handleEdit} />
-        <Button
-          title="Delete"
-          danger
-          onPress={() => deleteProject(project.id)}
-        />
+        <Button title="Delete" danger onPress={handleDelete} />
       </Card>
       <QRCodeModal
         value={shareableProject}

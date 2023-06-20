@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Button } from "react-native";
+import { Text, StyleSheet, Button } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { Colors, useTheme } from "@rneui/themed";
+import { Container } from "./View";
 
 export const QRCodeScanner = () => {
   const [hasPermission, setHasPermission] = useState<boolean>(false);
@@ -10,12 +11,12 @@ export const QRCodeScanner = () => {
   const { theme } = useTheme();
   const styles = makeStyles(theme.colors);
 
-  useEffect(() => {
-    const getBarCodeScannerPermissions = async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status === "granted");
-    };
+  const getBarCodeScannerPermissions = async () => {
+    const { status } = await BarCodeScanner.requestPermissionsAsync();
+    setHasPermission(status === "granted");
+  };
 
+  useEffect(() => {
     getBarCodeScannerPermissions();
   }, []);
 
@@ -32,26 +33,21 @@ export const QRCodeScanner = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <BarCodeScanner
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-        style={StyleSheet.absoluteFillObject}
-      />
-      {scanned && (
-        <Button title={"Tap to Scan Again"} onPress={() => setScanned(false)} />
-      )}
-    </View>
+    <BarCodeScanner
+      style={styles.absoluteFillObject}
+      onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+    />
   );
 };
 
 const makeStyles = (colors: Colors) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
+    absoluteFillObject: {
+      height: "100%",
+      width: "100%",
       backgroundColor: colors.background,
-      alignItems: "center",
-      justifyContent: "center",
     },
+
     scannedText: {
       color: colors.text,
     },
