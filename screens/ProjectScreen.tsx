@@ -15,6 +15,8 @@ import { Row } from "../components/View";
 import { formatDate } from "../helpers/utils";
 import { useState } from "react";
 import { QRCodeModal } from "../components/QRCodeModal";
+import { ProjectCalendar } from "../components/Calendar";
+import { ScrollView } from "react-native";
 
 const ProjectScreen = () => {
   const route = useRoute<RouteProp<RootStackParamList, "ProjectScreen">>();
@@ -45,27 +47,32 @@ const ProjectScreen = () => {
   const handleShare = () => {
     setProjectShareModal(true);
   };
+
   return (
     <Layout>
-      <Title style={{ textAlign: "center" }}>{project.name}</Title>
-      <Row>
-        <Text>{project.owner.name}</Text>
-        <Text>{formatDate(project.date)}</Text>
-      </Row>
-      <Card>
-        <Subtitle>Calendar</Subtitle>
-      </Card>
-      <Card>
-        <Subtitle>Controls</Subtitle>
-        <Button title="Share project" onPress={handleShare} />
-        <Button title="Edit" onPress={handleEdit} />
-        <Button title="Delete" danger onPress={handleDelete} />
-      </Card>
-      <QRCodeModal
-        value={shareableProject}
-        isVisible={projectShareModal}
-        handleClose={() => setProjectShareModal(false)}
-      />
+      <ScrollView>
+        <Title style={{ textAlign: "center" }}>{project.name}</Title>
+        <Row>
+          <Text>{project.owner.name}</Text>
+          <Text>{formatDate(project.date)}</Text>
+        </Row>
+        <Card>
+          <Subtitle>Calendar</Subtitle>
+          <ProjectCalendar />
+        </Card>
+        <Card>
+          <Subtitle>Controls</Subtitle>
+          <Button title="Share project" onPress={handleShare} />
+          <Button title="Edit" onPress={handleEdit} />
+          <Button title="Delete" danger onPress={handleDelete} />
+        </Card>
+
+        <QRCodeModal
+          value={shareableProject}
+          isVisible={projectShareModal}
+          closeModal={() => setProjectShareModal(false)}
+        />
+      </ScrollView>
     </Layout>
   );
 };

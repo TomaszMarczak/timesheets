@@ -44,7 +44,7 @@ export default function App() {
                 <Stack.Screen
                   name="ProjectScreen"
                   component={ProjectScreen}
-                  options={{ title: "Project information" }}
+                  options={{ title: "Project information", headerShown: true }}
                 />
                 <Stack.Screen
                   name="CameraScreen"

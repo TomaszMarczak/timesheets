@@ -2,14 +2,15 @@ import { Colors, Overlay, Text, useTheme } from "@rneui/themed";
 import QRCode from "react-native-qrcode-svg";
 import { Subtitle } from "./Text";
 import { View, StyleSheet, Dimensions } from "react-native";
+import { ModalWrapper, ModalProps } from "./ModalWrapper";
+import { Modal } from "react-native";
 
-interface QRCodeProps {
+interface QRCodeModal extends ModalProps {
   value: string;
-  handleClose: () => void;
-  isVisible: boolean;
 }
 
-export const QRCodeModal = ({ value, isVisible, handleClose }: QRCodeProps) => {
+export const QRCodeModal = (props: QRCodeModal) => {
+  const { value, closeModal, isVisible } = props;
   const { theme } = useTheme();
   const styles = makeStyles(theme.colors);
 
@@ -17,12 +18,11 @@ export const QRCodeModal = ({ value, isVisible, handleClose }: QRCodeProps) => {
   const size = Dimensions.get("window").width * 0.5;
 
   return (
-    <Overlay
+    <ModalWrapper
+      title="Scan to join"
+      closeModal={closeModal}
       isVisible={isVisible}
-      onBackdropPress={handleClose}
-      overlayStyle={styles.overlay}
     >
-      <Subtitle>Scan to join</Subtitle>
       <View style={styles.QRCodeContainer}>
         <QRCode
           value={value}
@@ -31,7 +31,7 @@ export const QRCodeModal = ({ value, isVisible, handleClose }: QRCodeProps) => {
           backgroundColor={theme.colors.white}
         />
       </View>
-    </Overlay>
+    </ModalWrapper>
   );
 };
 

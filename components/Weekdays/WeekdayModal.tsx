@@ -5,16 +5,17 @@ import { Subtitle, Title } from "../Text";
 import { NumericInput } from "../Input";
 import { Button } from "../Button";
 import { Row } from "../View";
+import { ModalProps, ModalWrapper } from "../ModalWrapper";
 
-interface WeekdayModalProps {
+interface WeekdayModalProps extends ModalProps {
   weekday: number | null; //change to weekday
   workingHours: number[];
   setWorkingHours: (workingHours: number[]) => void;
-  closeModal: () => void;
 }
 
 export const WeekdayModal = (props: WeekdayModalProps) => {
-  const { weekday, workingHours, setWorkingHours, closeModal } = props;
+  const { weekday, workingHours, setWorkingHours, closeModal, isVisible } =
+    props;
   const { theme } = useTheme();
   const styles = makeStyles(theme.colors);
 
@@ -37,12 +38,11 @@ export const WeekdayModal = (props: WeekdayModalProps) => {
   };
 
   return (
-    <Overlay
-      isVisible={true}
-      onBackdropPress={closeModal}
-      overlayStyle={styles.overlay}
+    <ModalWrapper
+      title={weekdays[props.weekday as number]}
+      closeModal={closeModal}
+      isVisible={isVisible}
     >
-      <Title style={styles.title}>{weekdays[props.weekday as number]}</Title>
       <Card>
         <Subtitle>Working hours</Subtitle>
         <NumericInput
@@ -51,7 +51,7 @@ export const WeekdayModal = (props: WeekdayModalProps) => {
           selectTextOnFocus
         />
       </Card>
-    </Overlay>
+    </ModalWrapper>
   );
 };
 

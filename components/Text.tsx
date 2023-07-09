@@ -6,8 +6,8 @@ export const Title = (props: TextProps) => {
       {...props}
       h1
       h1Style={{
-        marginBottom: 10,
-        fontSize: 48,
+        marginBottom: 18,
+        fontSize: 32,
       }}
     >
       {props.children}

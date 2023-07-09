@@ -5,16 +5,14 @@ import { Subtitle, Title } from "../Text";
 import { Button } from "../Button";
 import { useProjectsContext } from "../../context/ProjectsContext";
 import { useNavigation } from "@react-navigation/native";
+import { ModalProps, ModalWrapper } from "../ModalWrapper";
 
-export interface ProjectInfoModalProps {
+export interface ProjectInfoModalProps extends ModalProps {
   project: Project;
-  closeModal: () => void;
 }
 export const ProjectInfoModal = (props: ProjectInfoModalProps) => {
-  const { project, closeModal } = props;
+  const { project, closeModal, isVisible } = props;
   const { deleteProject } = useProjectsContext();
-  const { theme } = useTheme();
-  const styles = makeStyles(theme.colors);
   const navigation = useNavigation<any>();
 
   const handleEdit = () => {
@@ -22,12 +20,11 @@ export const ProjectInfoModal = (props: ProjectInfoModalProps) => {
     closeModal();
   };
   return (
-    <Overlay
-      isVisible
-      onBackdropPress={closeModal}
-      overlayStyle={styles.overlay}
+    <ModalWrapper
+      title={project.name}
+      closeModal={closeModal}
+      isVisible={isVisible}
     >
-      <Title style={styles.title}>{project.name}</Title>
       <Card>
         <Subtitle>Controls</Subtitle>
         <Button title="Edit" onPress={handleEdit} />
@@ -37,20 +34,6 @@ export const ProjectInfoModal = (props: ProjectInfoModalProps) => {
           onPress={() => deleteProject(project.id)}
         />
       </Card>
-    </Overlay>
+    </ModalWrapper>
   );
 };
-
-const makeStyles = (colors: Colors) => ({
-  overlay: {
-    backgroundColor: colors.card,
-    paddingHorizontal: 100,
-    paddingVertical: 20,
-    borderRadius: 10,
-  },
-  title: {
-    color: colors.active,
-    margin: "auto",
-    textAlign: "center" as "center",
-  },
-});

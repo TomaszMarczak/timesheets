@@ -120,14 +120,13 @@ const CreateUpdateProject = () => {
           <Button secondary onPress={handleCancel} title="Cancel" />
           <Button primary onPress={handleSave} title="Save" />
         </Row>
-        {modalValue != null && (
-          <WeekdayModal
-            weekday={modalValue}
-            workingHours={workingHours}
-            setWorkingHours={setWorkingHours}
-            closeModal={() => setModalValue(null)}
-          />
-        )}
+        <WeekdayModal
+          weekday={modalValue ? modalValue : 0}
+          workingHours={workingHours}
+          setWorkingHours={setWorkingHours}
+          closeModal={() => setModalValue(null)}
+          isVisible={modalValue != null}
+        />
       </Layout>
     </ScrollView>
   );

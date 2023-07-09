@@ -15,7 +15,13 @@ const ProjectInfoModal = Loadable({
   loading: () => null,
   render(loaded, props: ProjectInfoModalProps) {
     const Component = loaded.ProjectInfoModal;
-    return <Component project={props.project} closeModal={props.closeModal} />;
+    return (
+      <Component
+        project={props.project}
+        closeModal={props.closeModal}
+        isVisible={props.isVisible}
+      />
+    );
   },
 });
 
@@ -50,12 +56,11 @@ export const ProjectCard = ({ project }: ProjectCardProps) => {
             <Text style={styles.cardOwner}>{project.owner.name}</Text>
           </Container>
         </Card>
-        {modalVisible && (
-          <ProjectInfoModal
-            project={project}
-            closeModal={() => setModalVisible(false)}
-          />
-        )}
+        <ProjectInfoModal
+          project={project}
+          isVisible={modalVisible}
+          closeModal={() => setModalVisible(false)}
+        />
       </Pressable>
     </>
   );

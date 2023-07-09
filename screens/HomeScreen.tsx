@@ -8,16 +8,11 @@ import { useProjectsContext } from "../context/ProjectsContext";
 import { Button, LinkButton } from "../components/Button";
 import { Layout } from "../components/Layouts/Layout";
 import { ProjectCard } from "../components/Project/ProjectCard";
-import { QRCodeScanner } from "../components/QRCodeScanner";
 import { Link } from "@react-navigation/native";
 
 const HomeScreen = () => {
   const { userName, userId } = useUserContext();
   const { projects } = useProjectsContext();
-
-  const [openQRCodeScanner, setOpenQRCodeScanner] = useState<boolean | null>(
-    null
-  );
 
   return (
     <Layout>
