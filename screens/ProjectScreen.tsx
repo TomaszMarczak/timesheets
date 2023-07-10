@@ -58,7 +58,7 @@ const ProjectScreen = () => {
         </Row>
         <Card>
           <Subtitle>Calendar</Subtitle>
-          <ProjectCalendar />
+          <ProjectCalendar project={project} />
         </Card>
         <Card>
           <Subtitle>Controls</Subtitle>

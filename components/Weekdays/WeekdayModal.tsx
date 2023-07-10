@@ -6,6 +6,7 @@ import { NumericInput } from "../Input";
 import { Button } from "../Button";
 import { Row } from "../View";
 import { ModalProps, ModalWrapper } from "../ModalWrapper";
+import { valueBetween0And24 } from "../../helpers/utils";
 
 interface WeekdayModalProps extends ModalProps {
   weekday: number | null; //change to weekday
@@ -20,9 +21,7 @@ export const WeekdayModal = (props: WeekdayModalProps) => {
   const styles = makeStyles(theme.colors);
 
   const handleChangeWeekdayWorkingHours = (value: string) => {
-    //Enter only numbers, cannot be less than 0 and more than 24.
-    if (parseInt(value) < 0 || parseInt(value) > 24) return;
-    if (value.startsWith("0") && /\D/.test(value)) return;
+    if (!valueBetween0And24(value)) return;
     if (value === "" || value === "0" || value === "00") {
       const newWorkingHours = [...workingHours];
       newWorkingHours[weekday as number] = 0;

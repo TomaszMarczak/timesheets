@@ -74,14 +74,22 @@ export const updateContractors = async (
     if (!projectToUpdate) {
       return [];
     }
-    const updatedContractors = projectToUpdate.contractors.map(
-      (c: Contractor) => {
+    //check if contractor exists if not create contractor
+    const contractorExists = projectToUpdate.contractors.find(
+      (c: Contractor) => c.id === contractor.id
+    );
+    let updatedContractors = [];
+    if (contractorExists) {
+      updatedContractors = projectToUpdate.contractors.map((c: Contractor) => {
         if (c.id === contractor.id) {
           return contractor;
         }
         return c;
-      }
-    );
+      });
+    } else {
+      updatedContractors = [...projectToUpdate.contractors, contractor];
+    }
+
     const updatedProject = {
       ...projectToUpdate,
       contractors: updatedContractors,
