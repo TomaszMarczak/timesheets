@@ -35,16 +35,25 @@ export const useCalendar = () => {
     updateWorkday(projectId, workday);
   };
 
-  const removeWorkday = (projectId: string, workday: Workday) => {
+  const getWorkday = (projectId: string, date: string) => {
+    const contractor = projects
+      .find((p) => p.id === projectId)
+      ?.contractors.find((c) => c.id === userId);
+    if (!contractor) {
+      return;
+    }
+    const workday = contractor.calendar.find((w) => w.date === date);
+    return workday;
+  };
+
+  const removeWorkday = (projectId: string, date: string) => {
     const contracor = projects
       .find((p) => p.id === projectId)
       ?.contractors.find((c) => c.id === userId);
     if (!contracor) {
       return;
     }
-    const updatedCalendar = contracor.calendar.filter(
-      (w) => w.date !== workday.date
-    );
+    const updatedCalendar = contracor.calendar.filter((w) => w.date !== date);
     updateContractor(projectId, { ...contracor, calendar: updatedCalendar });
   };
   const updateWorkday = (projectId: string, workday: Workday) => {
@@ -63,5 +72,24 @@ export const useCalendar = () => {
     updateContractor(projectId, { ...contractor, calendar: updatedCalendar });
   };
 
-  return { addWorkday, removeWorkday, updateWorkday };
+  const getContractorTotalHours = (projectId: string, contractorId: string) => {
+    const contractor = projects
+      .find((p) => p.id === projectId)
+      ?.contractors.find((c) => c.id === contractorId);
+    if (!contractor) {
+      return 0;
+    }
+    const totalHours = contractor.calendar.reduce((acc, curr) => {
+      return acc + curr.hours;
+    }, 0);
+    return totalHours;
+  };
+
+  return {
+    addWorkday,
+    removeWorkday,
+    updateWorkday,
+    getWorkday,
+    getContractorTotalHours,
+  };
 };

@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     justifyContent: "space-evenly",
+    flexWrap: "wrap",
     gap: 10,
   },
   globalContainer: {

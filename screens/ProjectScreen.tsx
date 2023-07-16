@@ -15,16 +15,22 @@ import { Row } from "../components/View";
 import { formatDate } from "../helpers/utils";
 import { useState } from "react";
 import { QRCodeModal } from "../components/QRCodeModal";
-import { ProjectCalendar } from "../components/Calendar";
+import { ProjectCalendar } from "../components/Project/ProjectCalendar";
 import { ScrollView } from "react-native";
+import { useCalendar } from "../helpers/useCalendar";
+import { useUserContext } from "../context/UserContext";
 
 const ProjectScreen = () => {
   const route = useRoute<RouteProp<RootStackParamList, "ProjectScreen">>();
   const project = route.params?.project;
+  const { userId } = useUserContext();
   const { deleteProject } = useProjectsContext();
   const { theme } = useTheme();
   const styles = makeStyles(theme.colors);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const { getContractorTotalHours } = useCalendar();
+
+  const userTotalHours = getContractorTotalHours(project.id, userId);
 
   const handleEdit = () => {
     navigation.navigate("CreateUpdateProject", { project: project });
@@ -49,21 +55,30 @@ const ProjectScreen = () => {
   };
 
   return (
-    <Layout>
-      <ScrollView>
+    <ScrollView>
+      <Layout>
         <Title style={{ textAlign: "center" }}>{project.name}</Title>
         <Row>
           <Text>{project.owner.name}</Text>
           <Text>{formatDate(project.date)}</Text>
         </Row>
         <Card>
-          <Subtitle>Calendar</Subtitle>
-          <ProjectCalendar project={project} />
+          <Subtitle>My calendar</Subtitle>
+          <ProjectCalendar projectId={project.id} />
         </Card>
         <Card>
-          <Subtitle>Controls</Subtitle>
+          <Subtitle>Calendar info</Subtitle>
+          <Row>
+            <Text>Total hours: {userTotalHours} </Text>
+          </Row>
+        </Card>
+        <Card>
+          <Subtitle>Project controls</Subtitle>
           <Button title="Share project" onPress={handleShare} />
-          <Button title="Edit" onPress={handleEdit} />
+          {project.owner.id === userId && (
+            <Button title="Edit" onPress={handleEdit} />
+          )}
+
           <Button title="Delete" danger onPress={handleDelete} />
         </Card>
 
@@ -72,8 +87,8 @@ const ProjectScreen = () => {
           isVisible={projectShareModal}
           closeModal={() => setProjectShareModal(false)}
         />
-      </ScrollView>
-    </Layout>
+      </Layout>
+    </ScrollView>
   );
 };
 

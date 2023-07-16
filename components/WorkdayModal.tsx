@@ -7,21 +7,31 @@ import { Button } from "./Button";
 import { Row } from "./View";
 import { useState } from "react";
 import { valueBetween0And24 } from "../helpers/utils";
-import { useUserContext } from "../context/UserContext";
-import { Contractor } from "../models/Contractor";
 import { useCalendar } from "../helpers/useCalendar";
-import { Project } from "../models/Project";
+import { useEffect } from "react";
 
 export interface WorkdayModalProps extends ModalProps {
-  project: Project;
+  projectId: string;
   chosenDate: DateData | null;
 }
 
 export const WorkdayModal = (props: WorkdayModalProps) => {
-  const { closeModal, isVisible, chosenDate, project } = props;
+  const { closeModal, isVisible, chosenDate, projectId } = props;
   const [hours, setHours] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
-  const { addWorkday } = useCalendar();
+  const { addWorkday, getWorkday } = useCalendar();
+
+  useEffect(() => {
+    if (chosenDate === null) return;
+    const workday = getWorkday(projectId, chosenDate.dateString);
+    if (workday !== undefined) {
+      setHours(workday.hours);
+      setComment(workday.comment);
+    } else {
+      setHours(0);
+      setComment("");
+    }
+  }, [chosenDate]);
 
   const handleChangeHours = (value: string) => {
     if (!valueBetween0And24(value)) return;
@@ -29,7 +39,10 @@ export const WorkdayModal = (props: WorkdayModalProps) => {
       setHours(0);
       return;
     }
-    setHours(parseInt(value));
+    //If the value is not empty, set it to the working hours array.
+    if (!isNaN(parseInt(value))) {
+      setHours(parseInt(value));
+    }
   };
 
   const handleChangeComment = (value: string) => {
@@ -43,7 +56,7 @@ export const WorkdayModal = (props: WorkdayModalProps) => {
       hours: hours,
       comment: comment,
     };
-    addWorkday(project.id, workday);
+    addWorkday(projectId, workday);
     closeModal();
   };
   return (
@@ -54,19 +67,21 @@ export const WorkdayModal = (props: WorkdayModalProps) => {
     >
       <Card>
         <Subtitle>Edit workday hours</Subtitle>
-        <NumericInput onChangeText={handleChangeHours} />
+        <NumericInput
+          value={hours.toString()}
+          onChangeText={handleChangeHours}
+        />
       </Card>
       <Card>
         <Subtitle>Comment</Subtitle>
         <TextInput
           onChangeText={handleChangeComment}
           multiline
-          style={{ height: 100 }}
+          value={comment}
           placeholder="Enter comment if needed..."
         />
       </Card>
       <Row>
-        <Button onPress={closeModal} title="Cancel" />
         <Button onPress={handleSave} title="Save" />
       </Row>
     </ModalWrapper>
